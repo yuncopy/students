@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BaleCMS安装程序</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <script type="text/javascript" src="./static/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="./static/js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./static/bootstrap-3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/bootstrap-3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/bjy.css">
+    <script type="text/javascript" src="./static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="./static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" src="./static/js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="./static/css/install.css">
+</head>
+<body>
+<div id="nav">
+    <div class="inside">
+        <p class="name">BaleCMS<span>安装向导</span></p>
+        <ul class="schedule <?php echo $active == '1' ? active : '';?>">
+            <li class="number">1</li>
+            <li class="word">使用协议</li>
+        </ul>
+        <ul class="schedule <?php echo $active == '2' ? active : '';?>">
+            <li class="number">2</li>
+            <li class="word">环境检测</li>
+        </ul>
+        <ul class="schedule <?php echo $active == '3' ? active : '';?>">
+            <li class="number">3</li>
+            <li class="word">创建数据</li>
+        </ul>
+        <ul class="schedule <?php echo $active == '4' ? active : '';?>">
+            <li class="number">4</li>
+            <li class="word">安装完成</li>
+        </ul>
+    </div>
+</div>

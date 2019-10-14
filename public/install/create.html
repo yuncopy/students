@@ -1,0 +1,84 @@
+<?php include_once('./header.html');?>
+<div id="out">
+    <div class="inside">
+        <div class="box create">
+            <form class="form-inline" action="<?php echo $action;?>" method="post" >
+                <h2>数据库信息</h2>
+                <div class="one">
+                    <label class="control-label">数据库类型</label>
+                    <input class="form-control" type="text" name="DB_TYPE" value="mysql" disabled="disabled" />
+                </div>
+                <div class="one">
+                    <label class="control-label"> 数据库服务器</label>
+                    <input class="form-control" type="text" name="DB_HOST" value="127.0.0.1" />
+                </div>
+                <div class="one">
+                    <label class="control-label"> 数据库端口</label>
+                    <input class="form-control" type="text" name="DB_PORT" value="3306" />
+                </div>
+                <div class="one">
+                    <label class="control-label">数据库名</label>
+                    <input class="form-control" type="text" name="DB_NAME" value="balecms" />
+                </div>
+                <div class="one">
+                    <label class="control-label">数据库用户名</label>
+                    <input class="form-control" type="text" name="DB_USER" value="root">
+                </div>
+                <div class="one">
+                    <label class="control-label"> 数据库密码</label>
+                    <input class="form-control" type="text" name="DB_PWD">
+                </div>
+                <div class="one">
+                    <label class="control-label"> 数据表前缀</label>
+                    <input class="form-control" type="text" name="DB_PREFIX" value="bl_" />
+                </div>
+                <p class="agree">
+                    <a class="btn btn-primary" href="<?php echo $prev;?>">上一步</a>
+                    <input class="btn btn-success" id="btn-success" type="button" value="确认" />
+                </p>
+            </form>
+        </div>
+
+        <script>
+            $(document).ready(function(){
+                $('#btn-success').click(function () {
+                    var action = $('form.form-inline').attr('action');
+                    var data = $("form.form-inline").serialize();
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        processData: false,
+                        data: data,
+                        beforeSend:function(){
+                            swal({
+                                text: "请稍等，正在创建中...",
+                                icon: "info",
+                                button:{
+                                    closeModal: false
+                                }
+                            });
+                        },
+                        success: function (json) {
+                            var obj = jQuery.parseJSON(json);
+                            if(obj.status == 200){
+                                swal({
+                                    text: "创建成功",
+                                    icon: "success",
+                                }).then((value) => {
+                                    location.href = obj.msg;
+                                });
+                            }else{
+                                swal({
+                                    text: obj.msg,
+                                    icon: "warning",
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</div>
+</body>
+</html>
