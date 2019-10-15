@@ -1,0 +1,300 @@
+{% extends "layout.html" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{url('/assets/js/plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url('/assets/js/plugins/toastr/toastr.min.css')}}">
+{% endblock %}
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            
+            <!--学生--->
+            {% if login.role_id == 3 %} 
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5  >登录信息</h5>
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right"></div>
+                        <div class="ibox-content profile-content">
+                            <h4><i class="fa fa-feed"></i> 登录名 ： <strong> {{login.username}}</strong></h4>
+                            <h4><i class="fa fa-clock-o"></i> 北京时间 ： <strong id="divTtime"> </strong></h4>
+                            <!--p><i class="fa fa-map-marker"></i> 上海市闵行区绿地科技岛广场A座2606室</p-->
+                            <div class="user-button"> <!--学生-->
+                                <div class="row">
+                                    {% if result != 1 %}
+                                        <div class="col-sm-6">
+                                            <a type="button" href="{{elective_url|raw}}" class="btn btn-primary btn-sm btn-block"><i class="fa fa-envelope"></i> 我要选课</a>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-sm-6">
+                                           <button type="button" class="btn btn-w-m btn-success"><i class="fa fa-check"></i> {{resultText}}</button>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-sm-6">
+                                        <a type="button" href="{{fraction_url|raw}}" class="btn btn-default btn-sm btn-block"><i class="fa fa-coffee"></i> 查看成绩</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>毕业信息</h5>
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right"></div>
+                        <div class="ibox-content profile-content">
+                            <h4><i class="fa fa-star"></i> 学生学号 ： <strong> {{student.number}}</strong></h4>
+                            <h4><i class="fa fa-shield"></i> 学生姓名 ： <strong> {{student.username}}</strong></h4>
+                            <div class="user-button"> <!--学生-->
+                                <div class="row">
+                                    <div class="widget navy-bg p-lg text-center">
+                                        <div class="m-b-md">
+                                            <i class="fa fa-graduation-cap fa-4x"></i>
+                                            <h1 class="m-xs"></h1>
+                                            <h3 class="font-bold no-margins">
+                                                {{resultText}}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>最新动态</h5>
+                    </div>
+                    <div class="ibox-content">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">开题结果</div>
+                                <div class="panel-body">
+                                    <table id="dataTables" class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr><th>学期</th><th>姓名</th><th>题目</th><th>时间</th><th>结果</th></tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr><th>学期</th><th>学生</th><th>题目</th><th>时间</th><th>结果</th></tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">答辩结果</div>
+                                <div class="panel-body">
+                                    <table id="dataTablesTwo" class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr><th>学期</th><th>姓名</th><th>题目</th><th>时间</th><th>结果</th></tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr><th>学期</th><th>学生</th><th>题目</th><th>时间</th><th>结果</th></tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% elseif login.role_id == 2 %}
+            
+            <!--教师--->
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>登录信息</h5>
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right"></div>
+                        <div class="ibox-content profile-content">
+                            <h4><i class="fa fa-feed"></i> 登录名 ： <strong> {{login.username}}</strong></h4>
+                            <h4><i class="fa fa-clock-o"></i> 北京时间 ： <strong id="divTtime"> </strong></h4>
+                            <p><i class="fa fa-map-marker"></i> 深圳市福田区中康路126号卓悦汇购物中心23层</p>
+                            <div class="user-button"> <!--学生-->
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>最新动态</h5>
+                    </div>
+                </div>
+            </div>
+            
+            {% else %}
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5  >登录信息</h5>
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right"></div>
+                        <div class="ibox-content profile-content">
+                            <h4><i class="fa fa-feed"></i> 登录名 ： <strong> {{login.username}}</strong></h4>
+                            <h4><i class="fa fa-clock-o"></i> 北京时间 ： <strong id="divTtime"> </strong></h4>
+                            <p><i class="fa fa-map-marker"></i> 深圳市福田区中康路126号卓悦汇购物中心23层</p>
+                            <div class="user-button"> <!--学生-->
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>最新动态</h5>
+                    </div>
+                </div>
+            </div>
+            
+            
+            {% endif %}
+        </div>
+    </div>
+</body>
+<script src="{{url('/assets/js/plugins/dataTables/jquery.dataTables.js')}}"></script>
+<script src="{{url('/assets/js/plugins/dataTables/dataTables.bootstrap.js')}}"></script>
+<script src="{{url('/assets/js/plugins/toastr/toastr.min.js')}}"></script>
+<script>
+    function getCurDate() {
+        var d = new Date();
+        var week;
+        switch (d.getDay()) {
+            case 1:
+                week = "星期一";
+                break;
+            case 2:
+                week = "星期二";
+                break;
+            case 3:
+                week = "星期三";
+                break;
+            case 4:
+                week = "星期四";
+                break;
+            case 5:
+                week = "星期五";
+                break;
+            case 6:
+                week = "星期六";
+                break;
+            default:
+                week = "星期天";
+        }
+        var years = d.getFullYear();
+        var month = add_zero(d.getMonth() + 1);
+        var days = add_zero(d.getDate());
+        var hours = add_zero(d.getHours());
+        var minutes = add_zero(d.getMinutes());
+        var seconds = add_zero(d.getSeconds());
+        var ndate = years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+        divTtime.innerHTML = ndate;
+    }
+    function add_zero(temp) {
+        if (temp < 10)
+            return "0" + temp;
+        else
+            return temp;
+    }
+    
+    setInterval("getCurDate()", 100);
+    
+    // 数据表
+    $(document).ready(function () {
+        
+        var urlOne = "{{ url('/proposal/getdata.html') }}";
+        var tableOne = dataTablesFunction('dataTables',urlOne);
+        
+        var urlTwo = "{{ url('/defense/getdata.html') }}";
+        var tableTwo = dataTablesFunction('dataTablesTwo',urlTwo);
+        
+    });
+    
+    
+    var showChangePass = function(){
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "600",
+            "hideDuration": "1000",
+            "timeOut": "7000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr.warning('请您及时修改密码，单击右上角登录名称处。', '为了安全起见，更改密码');
+    };
+    
+    // 检测是否已经修改密码
+    var passed = "{{initPass}}";
+    if(!passed){
+        showChangePass();  // 修改密码提示
+    }
+     // 数据表格
+    var dataTablesFunction = function(TabId,URL){
+        var dataTables = $('#'+TabId).dataTable({
+             serverSide: true,
+             processing: false,
+             searching: false,
+             lengthChange: false,
+             destroy: true, //摧毁一个已经存在的Datatables，然后创建一个新的，
+             order: [[ 0, 'desc' ]],
+             ajax: {
+                type: "POST",
+                dataType: 'json',
+                url: URL,
+                data: function(data){
+                   
+                },
+                complete: function (xhr, ts) {
+                    // 提示处理
+                    $('[data-toggle="tooltip"]').tooltip();// 提示处理
+                    $('.dataTables_filter').hide();
+                }
+            },
+            columns: [
+                {"data": "semester_id","searchable": false },
+                {"data": "student_id","searchable": false },
+                {"data": "name","orderable": false},
+                {"data": "start_time","searchable": false },
+                {"data": "result","searchable": false, 
+                    "render":function(data, type, full, meta){
+                        if(data==3){
+                            var text= '<span data-toggle="tooltip" data-placement="right" title="未评估"  class="badge badge-success"><i class="fa fa-minus"></i></span>';
+                        }else if(data==1){
+                            var text= '<span data-toggle="tooltip" data-placement="right" title="通过"  class="badge badge-danger"><i class="fa fa-check"></i></span>';
+                        }else if(data==2){
+                            var text= '<span data-toggle="tooltip" data-placement="right" title="不通过"  class="badge badge-info"><i class="fa fa-close"></i></span>';
+                        }
+                        return text;
+                    }
+                }
+            ],
+        });
+        return dataTables;
+    };
+</script>  
+{% endblock %}

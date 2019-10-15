@@ -1,0 +1,653 @@
+{% extends "layout.html" %}
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h5>课程相关 <small> 分类列表</small></h5>
+                            <div class="ibox-tools">
+                            </div>
+                        </div>
+                        <div class="clients-list">
+                            <ul class="nav nav-tabs">
+                                <li class="catetab active" id="weektab">
+                                    <a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i>上课星期
+                                        <span style="cursor: pointer;" data-toggle="tooltip" data-placement="right"  data-cate="week" onClick="add(this)" title="添加" class="fa fa-plus text-navy"></span>      
+                                    </a>         
+                                </li>
+                                <li class="catetab" id="intervaltab">
+                                    <a data-toggle="tab" href="#tab-2"><i class="fa fa-briefcase"></i>上课时间段
+                                        <span style="cursor: pointer;" data-toggle="tooltip" data-placement="right"  data-cate="interval" onClick="add(this)" title="添加" class="fa fa-plus text-navy"></span>      
+                                    </a>
+                                </li>
+                                <li class="catetab" id="roomtab">
+                                    <a data-toggle="tab" href="#tab-3"><i class="fa fa-briefcase"></i> 上课教室
+                                        <span style="cursor: pointer;" data-toggle="tooltip" data-placement="right"  data-cate="room" onClick="add(this)" title="添加" class="fa fa-plus text-navy"></span>
+                                    </a>
+                                </li>
+                                <li class="catetab" id="gradetab">
+                                    <a data-toggle="tab" href="#tab-4"><i class="fa fa-briefcase"></i> 分数等级
+                                        <span style="cursor: pointer;" data-toggle="tooltip" data-placement="right"  data-cate="grade" onClick="add(this)" title="添加" class="fa fa-plus text-navy"></span>
+                                    </a>
+                                </li>
+                                 <li class="catetab" id="credittab">
+                                    <a data-toggle="tab" href="#tab-5"><i class="fa fa-briefcase"></i> 学分管理
+                                        <span style="cursor: pointer;" data-toggle="tooltip" data-placement="right"  data-cate="credit" onClick="add(this)" title="添加" class="fa fa-plus text-navy"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <div class="ibox float-e-margins">
+                                                <div class="ibox-content">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr><th>ID</th><th>名称</th><th>添加时间</th><th>操作</th></tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% if weeks|length > 0 %}
+                                                                {% for week in weeks %}
+                                                                    <tr>
+                                                                        <td>{{ week.id|e }}</td>
+                                                                        <td class="name">{{ week.name|e }}</td>
+                                                                        <td>{{ week.create_time|e }}</td>
+                                                                        <td>
+                                                                         <a  data-toggle="tooltip"  data-placement="right" data-id="{{ week.id|e }}" data-row="{{week|json_encode()}}" data-cate="week" onClick="edit(this)" title="编辑" href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>
+                                                                         |  <a  data-toggle="tooltip" data-placement="right" data-id="{{ week.id|e }}" data-cate="week" onClick="del(this)" title="删除" href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-2" class="tab-pane">
+                                    <div class="full-height-scroll">
+                                       <div class="table-responsive">
+                                            <div class="ibox float-e-margins">
+                                                <div class="ibox-content">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr><th>ID</th><th>名称</th><th>添加时间</th><th>操作</th></tr>
+                                                        </thead>
+                                                        <tbody>
+                                                       {% if intervals|length > 0 %}
+                                                            {% for interval in intervals %}
+                                                                <tr>
+                                                                    <td>{{ interval.id|e }}</td>
+                                                                    <td>{{ interval.name|e }}</td>
+                                                                    <td>{{ interval.create_time|e }}</td>
+                                                                    <td>
+                                                                     <a  data-toggle="tooltip"  data-placement="right" data-id="{{ interval.id|e }}" data-row="{{interval|json_encode()}}" data-cate="interval" onClick="edit(this)" title="编辑" href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>
+                                                                     |  <a  data-toggle="tooltip" data-placement="right" data-id="{{ interval.id|e }}" data-cate="interval" onClick="del(this)" title="删除" href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead>
+                                                    <tr><th>ID</th><th>名称</th><th>添加时间</th><th>操作</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% if rooms|length > 0 %}
+                                                        {% for room in rooms %}
+                                                            <tr>
+                                                                <td>{{ room.id|e }}</td>
+                                                                <td class="name">{{ room.name|e }}</td>
+                                                                <td>{{ room.create_time|e }}</td>
+                                                                <td>
+                                                                <a  data-toggle="tooltip"  data-placement="right" data-id="{{ room.id|e }}" data-row="{{room|json_encode()}}" data-cate="room" onClick="edit(this)" title="编辑" href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>
+                                                                {% if room.children|length < 1 %}
+                                                                | <a  data-toggle="tooltip" data-placement="right" data-id="{{ room.id|e }}" data-cate="room" onClick="del(this)" title="删除" href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>                                                           
+                                                                {% endif %}
+                                                                | <a  data-toggle="tooltip"  data-placement="right" data-id="{{ room.id|e }}" data-row="{{room|json_encode()}}"  data-cate="room" onClick="add(this)" title="添加子项" href="javascript:void(0);"><i class="fa fa-plus text-navy"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="tab-4" class="tab-pane">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead>
+                                                    <tr><th>ID</th><th>等级</th><th>分数</th><th>添加时间</th><th>操作</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% if grades|length > 0 %}
+                                                        {% for grade in grades %}
+                                                            <tr>
+                                                                <td>{{ grade.id|e }}</td>
+                                                                <td class="name">{{ grade.name|e }}</td>
+                                                                <td>{{ grade.value|replace({'-': ' - '}) }}</td>
+                                                                <td>{{ grade.create_time|e }}</td>
+                                                                <td>
+                                                                <a  data-toggle="tooltip"  data-placement="right" data-id="{{ grade.id|e }}" data-row="{{grade|json_encode()}}" data-cate="grade" onClick="edit(this)" title="编辑" href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>
+                                                                |  <a  data-toggle="tooltip" data-placement="right" data-id="{{ grade.id|e }}" data-cate="grade" onClick="del(this)" title="删除" href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>
+                                                               </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="tab-5" class="tab-pane">
+                                    <div class="full-height-scroll">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead>
+                                                    <tr><th>ID</th><th>学分</th><th>添加时间</th><th>操作</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% if credits|length > 0 %}
+                                                        {% for credit in credits %}
+                                                            <tr>
+                                                                <td>{{ credit.id|e }}</td>
+                                                                <td class="name">{{ credit.name|e }}</td>
+                                                                <td>{{ credit.create_time|e }}</td>
+                                                                <td>
+                                                                <a  data-toggle="tooltip"  data-placement="right" data-id="{{ credit.id|e }}" data-row="{{credit|json_encode()}}" data-cate="credit" onClick="edit(this)" title="编辑" href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>
+                                                                |  <a  data-toggle="tooltip" data-placement="right" data-id="{{ credit.id|e }}" data-cate="credit" onClick="del(this)" title="删除" href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>
+                                                               </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--编辑模态框--->
+    <div class="modal inmodal fade" id="modalUpdate" tabindex="-1" role="dialog"    aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">编辑学期</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="formUpdate">
+                            <div class="form-group">
+                                <input id="update_id" name="id" value="" class="form-control" type="hidden">
+                                <input id="update_cate" name="cate" value="" class="form-control" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">名称：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_name" name="name" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--新增模态框-->
+    <div class="modal inmodal fade" id="modalAdd" tabindex="-1" role="dialog"    aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">编辑学期</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="formAdd">
+                            <div class="form-group">
+                                <input id="add_cate" name="cate" value="" class="form-control" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">名称：</label>
+                                <div class="col-sm-7">
+                                    <input id="add_name" name="name" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+{% endblock %}
+
+{% block script %}
+ <!-- jQuery Validation plugin javascript-->
+<script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+<script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+<script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+<script src="{{url('/assets/js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
+
+<script>
+    $(function () {
+        
+        $('.full-height-scroll').slimScroll({
+            height: '100%'
+        });
+        
+        $('[data-toggle="tooltip"]').tooltip();
+        
+        $('li.catetab').removeClass('active');  //全部清除
+        $(document).on('click','li.catetab',function(){
+            var tab = $(this).attr('id');
+            sessionStorage.tab = tab;
+            console.log(sessionStorage.tab);
+        });
+        // 默认打开
+        if(sessionStorage.tab){
+            $('#'+sessionStorage.tab).addClass('active');
+            var idn = $('#'+sessionStorage.tab).find('a').attr('href');
+            $(idn).addClass('active');
+        };
+        
+    });   
+    
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    var valuedata,weekMessages,intervalRule,intervalMessages;
+    var initRM = function (){
+            // 检测星期
+            weekRule = {
+                name:{
+                    required: true,
+                    remote:{
+                        url:"{{url('/category/unique.html')}}",
+                        type:"post",
+                        data: {
+                            cate:'week',
+                            name :'name',
+                            value: function(){
+                                return $('#weekname').val();
+                            }
+                        }
+                    }
+                }
+            };
+            
+            weekMessages = {
+                name: {
+                    required: icon + "请输入星期名称",
+                    remote: icon + "输入星期名称已存在"
+                }
+            };
+    
+            intervalRule = {
+                name:{
+                    required: true,
+                    remote:{
+                        url:"{{url('/category/unique.html')}}",
+                        type:"post",
+                        data: {
+                            cate:'interval',
+                            name :'name',
+                            value: function(){
+                                return $('#intervalname').val();
+                            }
+                        }
+                    },
+                    isInterval:true
+                }
+            };
+
+            intervalMessages = {
+                name: {
+                    required: icon + "请输入时间段",
+                    remote: icon + "输入时间段已存在",
+                    isInterval:icon + "输入正确的格式：00:10-23:59"
+                }
+            };
+            
+            
+            // 检测教室
+            roomRule = {
+                name:{
+                    required: true,
+                    remote:{
+                        url:"{{url('/category/unique.html')}}",
+                        type:"post",
+                        data: {
+                            cate:'room',
+                            name :'name',
+                            value: function(){
+                                return $('#roomname').val();
+                            }
+                        }
+                    }
+                }
+            };
+            
+            roomMessages = {
+                name: {
+                    required: icon + "请输入教室名称",
+                    remote: icon + "输入教室名称已存在：[父类]名称"
+                }
+            };
+            
+            // 检测分数等级
+            gradeRule = {
+                name:{
+                    required: true
+                },
+                value:{
+                    required: true,
+                    isGrade:true
+                }
+            };
+
+            gradeMessages = {
+                name: {
+                    required: icon + "请输入名称"
+                },
+                value:{
+                    required: icon + "请输入分数范围",
+                    isGrade:icon + "输入正确的格式：90-100"
+                }
+            };
+            
+            // 检测学分
+            creditRule = {
+                name:{
+                    required: true,
+                    isCredit:true
+                }
+            };
+            creditMessages = {
+                name: {
+                    required: icon + "请输入名称"
+                }
+            };
+    };
+   
+    jQuery.validator.addMethod("isInterval", function(value, element) {  
+        var length = value.length;  
+        var isInterval = /^[0-2][0-9]:[0-5][0-9]\-[0-2][0-9]:[0-5][0-9]$/;    //20XX-20XX学年第x学期
+        return this.optional(element) || ((length == 11) && isInterval.test( value ));    
+    }, "请正确填写时间段格式");
+
+    jQuery.validator.addMethod("isGrade", function(value, element) { 
+        var isGrade = /^[0-9]{1,2}\-[0-9]{1,3}$/;    //10-30
+        return this.optional(element) || (isGrade.test( value ));    
+    }, "请正确填写指定格式");
+    
+    jQuery.validator.addMethod("isCredit", function(value, element) { 
+        var isGrade = /^[0-9]{1,2}$/;    //10-30
+        return this.optional(element) || (isGrade.test( value ));    
+    }, "请正确填写学分");
+    
+    var isReload = false; // 是否进行添加操作
+    var validator = function(formid,aurl,validRule,validMessages,object){
+        var validator  = $("#"+formid).validate({
+            debug: true, //调试模式取消submit的默认提交功能 
+            rules: validRule,
+            messages: validMessages,
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: aurl,
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#update_'+i).after(error);
+                           });
+                       }else{
+                           var text = 'error';
+                           if(dataJson.status == 105200 ){
+                                text = 'success';
+                                isReload = true;
+                                var t2 = window.setTimeout(function(){
+                                    $('#modalUpdate').modal('hide');  // 关闭模特框
+                                },4000);//使用字符串执行方法 
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message,     //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    }
+                });
+            }
+        });  // 表单验证
+    };
+    
+    // 编辑操作,加载页面  escape()和unescape()
+    var edit = function(that){
+        var row = $(that).attr('data-row');
+        //console.log(row);
+        var rowJson = jQuery.parseJSON(row); 
+        $.each(rowJson ,function(index,value){    // 设置数据
+            $('#update_'+index).val(value); 
+        });
+        var url = "{{ url('/category/update.html') }}";
+        var formid = 'formUpdate';
+        var cate = $(that).attr('data-cate');
+        if(cate){
+            switch(cate){
+                case 'week':
+                    var title = '编辑星期';
+                    $('#update_name').attr('id','weekname');
+                    initRM();
+                    validator( formid ,url,weekRule,weekMessages,that);
+                    break;
+                case 'interval':
+                    var title = '编辑时间段';
+                    $('#update_name').attr('id','intervalname');
+                    initRM();
+                    validator( formid ,url,intervalRule,intervalMessages,that);
+                    break;
+                case 'room':
+                    var title = '编辑教室';
+                    $('#update_name').attr('id','roomname');
+                    initRM();
+                    validator( formid ,url,roomRule,roomMessages,that);
+                    break;
+                case 'grade':
+                    var title = '编辑分数等级';
+                    $('#update_name').attr('id','gradename');
+                    initRM();
+                    validator( formid ,url,gradeRule,gradeMessages,that);
+                    var gradeInput = '<div class="form-group" id="grade-group">';
+                        gradeInput += '<label class="col-sm-3 control-label">分数范围：</label>';
+                            gradeInput += '<div class="col-sm-7">';
+                                gradeInput += '<input id="update_value" name="value" value="'+rowJson.value+'" class="form-control" type="text" aria-required="true" aria-invalid="false">';
+                            gradeInput += '</div>';
+                        gradeInput += '</div>';
+                    $('#gradename').parents(".form-group").after(gradeInput);
+                    break;
+                case 'credit':
+                    var title = '编辑学分';
+                    $('#update_name').attr('id','creditname');
+                    initRM();
+                    validator( formid ,url,creditRule,creditMessages,that);
+                    break;
+            }
+            $('#update_cate').val(cate); // 赋值
+        }
+        var modalObject = $('#modalUpdate');
+        modalObject.modal({backdrop: 'static', keyboard: true});
+        modalObject.find('.modal-title').html(title);
+        modalObject.on('hidden.bs.modal', function (e) {
+            $('#formUpdate').find("input[name='name']").attr('id','update_name');// 恢复ID
+            $("#pid-group").remove(); // 关闭后删除PID表单
+            $("#grade-group").remove(); // 关闭后删除分数表单
+            isReload === true ?  window.location.reload() : isReload; 
+        });
+    };
+    
+     // 删除操作
+    var del = function(that){
+        var id = $(that).attr('data-id');
+        var tr = $(that).parents("tr");
+        var cate =  $(that).attr("data-cate");
+        tr.addClass('text-muted');
+        layer.alert('你要进行删除ID：'+id+' 的记录吗？', {
+            title:'操作提示',
+            icon: 3,
+            closeBtn: 1
+        }, function(index){
+            var delUrl = "{{ url('/category/del/"+id+".html')|raw}}";
+            $.get( delUrl ,{ "cate":cate }, function(data){
+                if(data.status){
+                    tr.remove(); // 删除行
+                    layer.msg( data.message , {icon: 1});
+                }
+            },'json');
+        });
+
+        $('.layui-layer-close').on( 'click', function () {
+            tr.removeClass('text-muted');
+        });
+    };
+    
+    
+    
+    //添加操作
+    var add = function(that){
+        var url = "{{ url('/category/adddata.html') }}";
+        var formid = 'formAdd';
+        var cate = $(that).attr('data-cate');
+        //console.log(cate);
+        if(cate){
+            switch(cate){
+                case 'week':
+                    var title = '新增星期';
+                    $('#add_name').attr('id','weekname');
+                    initRM();
+                    validator( formid ,url,weekRule,weekMessages,that);
+                    break;
+                case 'interval':
+                    $('#add_name').attr('id','intervalname');
+                    initRM();
+                    validator( formid ,url,intervalRule,intervalMessages,that);
+                    var title = '新增时间段';
+                    var span = '<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>格式要求：00:10-23:59</span>';
+                     $('#intervalname').after(span);
+                    break;
+                case 'room':
+                    $('#add_name').attr('id','roomname');
+                    initRM();
+                    validator( formid ,url,roomRule,roomMessages,that);
+                    var title = '新增教室';
+                    break;
+                case 'grade':
+                    $('#add_name').attr('id','gradename');
+                    initRM();
+                    validator( formid ,url,gradeRule,gradeMessages,that);
+                    var title = '新增分数等级';
+                    var gradeInput = '<div class="form-group" id="grade-group">';
+                        gradeInput += '<label class="col-sm-3 control-label">分数范围：</label>';
+                            gradeInput += '<div class="col-sm-7">';
+                                gradeInput += '<input id="value" placeholder="请填写 90-10 格式" name="value" value="" class="form-control" type="text" aria-required="true" aria-invalid="false">';
+                            gradeInput += '</div>';
+                        gradeInput += '</div>';
+                    $('#gradename').parents(".form-group").after(gradeInput);
+                    break;
+                case 'credit':
+                    $('#add_name').attr('id','creditname');
+                    initRM();
+                    validator( formid ,url,creditRule,creditMessages,that);
+                    var title = '新增学分';
+                break;
+                 
+            }
+            $('#add_cate').val(cate); // 赋值
+        }
+        
+        //=========处理添加子菜单===start====  
+        var row = $(that).attr('data-row');
+        if(row){
+            var rowJson = jQuery.parseJSON(row); 
+            var pid = rowJson.id;
+            var pname = rowJson.name;
+            //console.log(rowJson);
+            var pidInput = '<div class="form-group" id="pid-group">';
+                pidInput += '<input id="add_pid" name="pid" value="'+pid+'"  type="hidden">';
+                pidInput += '<label class="col-sm-3 control-label">父类：</label>';
+                    pidInput += '<div class="col-sm-7">';
+                        pidInput += '<input value="'+pname+'" disabled="disabled" class="form-control" type="text" aria-required="true" aria-invalid="false">';
+                    pidInput += '</div>';
+                pidInput += '</div>';
+            $("#formAdd").prepend(pidInput);  // 添加表单元素
+        };
+        //=========处理添加子菜单 ===end====
+        
+        var modalObject = $('#modalAdd');
+        modalObject.find('.modal-title').html(title);
+        modalObject.modal({backdrop: 'static', keyboard: true});
+        modalObject.on('hidden.bs.modal', function (e) {
+            $('#formAdd').find("input[name='name']").attr('id','add_name');// 恢复ID
+            $("#pid-group").remove(); // 关闭后删除PID表单
+            $("#grade-group").remove(); // 关闭后删除分数表单
+            isReload === true ?  window.location.reload() : isReload; 
+        });
+    };
+    
+</script>
+{% endblock %}
+
+

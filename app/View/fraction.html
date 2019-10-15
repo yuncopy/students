@@ -1,0 +1,501 @@
+{% extends "layout.html" %}
+{% block css %}
+<style>
+ .form-horizontal select.m-b{padding-top: 3px}
+</style>
+{% endblock %}
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>成绩管理 <small>成绩列表</small></h5>
+                        <div class="ibox-tools"></div>
+                    </div>
+                    <div class="col-xs-5 col-md-5">
+                        <a href="javascript:history.back(-1)"><button type="button" class="btn btn-w-m btn-info"><i class="fa fa-mail-reply"></i> 返回列表</button></a>
+                    </div>
+                     <div class="col-xs-6 col-md-6">
+                        <div class="input-group m-b">
+                            <div class="input-group-btn">
+                                <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+                                   查询条件 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a data-name="" href="javascript:void(0);">模糊查询</a></li>
+                                    <li><a data-name="1" href="javascript:void(0);">更多筛选</a></li>
+                                </ul>
+                            </div>
+                            <input placeholder="学生姓名" type="text" class="form-control" name="" value=""  id='tablesSearch'>
+                            <span class="input-group-btn"><button  id="searchButton" type="button" class="btn btn-primary">搜索</button></span>
+                        </div>
+                    </div>
+                     <!--更多筛选-->
+                    <div class="col-xs-12 col-md-12">
+                        <form class="form-horizontal" id="searchform" style="display:none;">
+                            <div class="col-xs-5 col-md-5">
+                                <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择学期 <span class="fa fa-navicon"></span></span>
+                                        <select id="semester_id" class="form-control m-b" name="semester_id">
+                                          <option value="">全部</option>
+                                          {% if semesters|length > 0 %}
+                                              {% for semester in semesters %}
+                                                  <option value="{{ semester.id|e }}">{{ semester.name|e }}</option>
+                                              {% endfor %}
+                                          {% endif %}
+                                      </select>
+                                   </div>
+                               </div>
+                            </div>
+                            <div class="col-xs-5 col-md-5">
+                                <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择等级 <span class="fa fa-navicon"></span></span>
+                                        <select id="score" class="form-control m-b" name="score">
+                                          <option value="">全部</option>
+                                          {% if scores|length > 0 %}
+                                              {% for score in scores %}
+                                                  <option value="{{ score.value|e }}"> {{ score.name|e }} [{{ score.value|e }}]</option>
+                                              {% endfor %}
+                                          {% endif %}
+                                      </select>
+                                   </div>
+                               </div>
+                            </div>
+                            <div class="col-xs-5 col-md-5">
+                                <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择科目 <span class="fa fa-calendar"></span></span>
+                                        <select id="subject_id" class="form-control m-b" name="subject_id">
+                                            <option value="">全部</option>
+                                            {% if subjects|length > 0 %}
+                                                {% for subject in subjects %}
+                                                    <option value="{{ subject.id|e }}"> {{ subject.name|e }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                   </div>
+
+                                    <input placeholder="选择科目" type="hidden"  id='_subject_id'>
+
+                                </div>
+                               
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="ibox-content">
+                        <table id="dataTables" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>学期</th>
+                                    <th>学生</th>
+                                    <th>科目</th>
+                                    <th>分数</th>
+                                    <th {{W(33)}}>等级</th>
+                                    <th>录入时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>学期</th>
+                                    <th>学生</th>
+                                    <th>科目</th>
+                                    <th>分数</th>
+                                    <th {{W(33)}}>等级</th>
+                                    <th>录入时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!--编辑课程--> 
+    <div class="modal inmodal fade" id="fractonUpdate" tabindex="-1" role="dialog"    aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">编辑成绩</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="fractionFormUpdate">
+                            <div class="form-group">
+                                <input id="update_id" name="id" value="" class="form-control" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生名称：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_student_id" disabled="disabled" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生课程：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_subject_id" disabled="disabled" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">当前成绩：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_score" type="text" name="score" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-info" id="getNextStudent" data-index="0" type="button">下一个</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--查看更多-->
+    <div class="modal inmodal fade" id="electiveMoreModal" tabindex="-1" role="dialog"    aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">查看信息</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="electiveMoreForm">
+                            <div class="form-group">
+
+                                <label class="col-sm-3 control-label">学期：</label>
+                                <div class="col-sm-7">
+                                    <input disabled="disabled" id="show_semester_id"  class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">导师：</label>
+                                <div class="col-sm-7">
+                                    <input  disabled="disabled" id="show_teacher_id"  class="form-control" type="text" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">课程：</label>
+                                <div class="col-sm-7">
+                                    <input  disabled="disabled" id="show_subject_id"  class="form-control" type="text" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学分：</label>
+                                <div class="col-sm-7">
+                                    <input  disabled="disabled" id="show_subject_credit"  class="form-control" type="text" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选课时间：</label>
+                                <div class="col-sm-7">
+                                    <input  disabled="disabled" id="show_start_end_time"  class="form-control" type="text" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生信息：</label>
+                                <div class="col-sm-7">
+                                    <input disabled="disabled" id="show_student_name"  class="form-control" type="text">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+{% endblock %}
+
+{% block script %}
+    <!-- Data Tables -->
+    <script src="{{url('/assets/js/plugins/dataTables/jquery.dataTables.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/dataTables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+    
+   
+    <script>
+        $(document).ready(function () {
+
+            function GetRequest(variable) {
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return(false);
+            }
+
+            var subject_id = GetRequest('sid');
+            subject_id && $('#_subject_id').attr({"name":"subject_id","value":subject_id});
+
+            // 默认加载
+            dataTablesFunction(subject_id);
+            
+            // 点击搜索
+            $('#searchButton').click(function(){
+                var Tables = dataTablesFunction(subject_id);
+            });
+            
+            
+       
+            // 下拉框选择
+            $('.dropdown-menu').find('a').click(function(){
+                var column = $(this).attr("data-name");
+                var text = $(this).html();
+                $('.dropdown-toggle').html(text+' <span class="caret"></span>');
+                if(column == '1'){  // 更多条件处理
+                    $('#tablesSearch').attr('disabled','disabled').val('');
+                    $('#searchform').show();
+                }else{
+                    $('#tablesSearch').removeAttr('disabled');
+                    $('#searchform').hide();
+                }
+            });
+            
+            
+            var icon = "<i class='fa fa-times-circle'></i> ";
+            //录入分数是否正确  
+            jQuery.validator.addMethod("isScore", function(value, element) {  
+                var regScore = /^[0-9]{1,3}$/;  
+                var score = Number(value);
+                var scoreNum;
+                if((0 <= score) && (score < 101)){
+                    scoreNum = true;
+                }
+                return this.optional(element) || ( scoreNum == true && regScore.test( value ) );    
+            }, "请正确填写学生分数");
+
+            // 编辑表单验证
+            var validate = $("#fractionFormUpdate").validate({
+                debug: false, //调试模式取消submit的默认提交功能 
+                rules: {
+                    score:{
+                        required: true,
+                        isScore:true
+                    }
+                },
+                messages: {
+                    score: {
+                        required: icon + "请输入学生成绩",
+                        isScore : icon + "请输入学生成绩有误"
+                    }
+                },
+                submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                    var datas = $(form).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('/fraction/update.html') }}",
+                        data: datas,
+                        dataType: "json",
+                        success: function(dataJson){
+                            if(dataJson.valid === 0){
+                               var message = dataJson.message;
+                               $.each(message,function(i,v){  // 后端验证提示
+                                   var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                                   $('#'+i).after(error);
+                               });
+                           }else{
+                               text = 'error';
+                               if(dataJson.status == 200903){
+                                  text = 'success';
+                                  isReload = true;
+                               }
+                               $.AngelaAutoTips({
+                                   msg : dataJson.message, //显示的消息
+                                   type : text		   //提示类型（1、success 2、error 3、warning）
+                               });
+                           }
+                        },
+                        error:function(){
+                            $.AngelaAutoTips({
+                                msg : ' 很抱歉！编辑失败，请核实信息是否正确', //显示的消息
+                                type : 'error'		   //提示类型（1、success 2、error 3、warning）
+                            });
+                        }
+                    });
+                }
+            });  // 表单验证  
+            
+        });
+        
+        // 数据表格
+        var dataTablesFunction = function(subject_id=0){
+          
+            var dataTables = $('#dataTables').dataTable({
+                 serverSide: true,
+                 lengthChange:true,
+                 processing: false,
+                 searching: true,
+                 destroy: true, //摧毁一个已经存在的Datatables，然后创建一个新的，
+                 order: subject_id ? [[2, 'asc']] :[[1, 'desc'],[ 5, 'desc' ]],
+                 ajax: {
+                    type: "POST",
+                    dataType: 'json',
+                    url: "{{ url('/fraction/getdata.html') }}",
+                    data: function(data){
+                        var colvalue = $('#tablesSearch').val(); 
+                        if(colvalue){  // 单独教师查询
+                            data.student_name = colvalue;
+                        }else{
+                           data.searchdata = $('#searchform').serialize(); // 精准查询
+                        }
+                    },
+                    complete: function (xhr, ts) {
+                        // 提示处理
+                        $('[data-toggle="tooltip"]').tooltip();
+                        $('.dataTables_filter').hide();
+                    }
+                },
+                columns: [
+                    {"data": "id","name":"id","orderable": false,"searchable": false},
+                    {"data": "semester_id","name":"semester_id","searchable": true},
+                    {"data": "student_id","name":"student_id","searchable": true},
+                    {"data": "subject_id","name":"subject_id","searchable": true},
+                    {"data": "score","name":"score","searchable": false},
+                    {"data": "score_grade","name":"score_grade","searchable": false,"createdCell": function (td, cellData, rowData, row, col) {
+                        var tdd = "{{W(33)}}";
+                        if(tdd.length > 0){
+                            $(td).remove();// 删除元素
+                        }
+                    }},
+                    {"data": "create_time","name":"create_time","searchable": false},
+                    {"data": "action","name":"action","orderable": false,"searchable": false,
+                        "render": function (data, type, full, meta) {
+                            var button = '<a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" data-row="'+escape(JSON.stringify(full))+'" onClick="update(this)"  class="add" title="编辑"  href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i> | </a>';
+                            button += '<a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" title="删除" onClick="del(this)"  href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i> | </a>';
+                            button += '<a  data-toggle="tooltip" data-placement="right" data-row="'+escape(full.elective)+'" data-id="'+data+'" onClick="more(this)" title="更多"  href="javascript:void(0);"><i class="glyphicon glyphicon-zoom-in text-navy"></i></a>';
+                            return button;
+                        }
+                    }
+                ]
+            });
+            return dataTables;
+        };
+        
+        
+        // 删除操作
+        var del = function(that){
+            var id = $(that).attr('data-id');
+            var tr = $(that).parents("tr");
+            tr.addClass('text-muted');
+            layer.alert('你要进行删除ID：'+id+' 的记录吗？', {
+                title:'操作提示',
+                icon: 3,
+                closeBtn: 1
+            }, function(index){
+                var delUrl = "{{ url('/fraction/del/"+id+".html')|raw}}";
+                $.get( delUrl , function(data){
+                    if(data.status){
+                        tr.remove(); // 删除行
+                        layer.msg( data.message , {icon: 1});
+                    }
+                },'json');
+            });
+
+            $('.layui-layer-close').on( 'click', function () {
+                tr.removeClass('text-muted');
+            });
+        };
+       
+        var isReload= false;
+        // 更新操作
+        var update =function(that){
+            
+            var data = $(that).attr('data-row');
+            var row = unescape(data);
+            var rowJson = jQuery.parseJSON(row); 
+            // 设置数据
+            $.each(rowJson ,function(index,value){
+                $('#update_'+index).val(value); 
+            });
+            
+            modalObject = $('#fractonUpdate');
+            modalObject.modal({backdrop: 'static', keyboard: true});
+            modalObject.on('hidden.bs.modal', function (e) {
+                isReload === true ?  window.location.reload() : isReload; 
+            });
+
+            //处理下一个
+            rowsData = nextStudent(that);
+            $('#getNextStudent').attr('data-index',0);
+        };
+
+        // 查看更多
+        var more  = function(that){
+            var id = $(that).attr('data-id');
+            var data =  $(that).attr('data-row');
+            var row = unescape(data);
+            var rowJson = jQuery.parseJSON(row);
+            // 设置数据
+            $.each(rowJson ,function(index,value){
+                $('#show_'+index).val(value);
+            });
+            console.log(rowJson);
+            $('#electiveMoreModal').modal({backdrop: 'static', keyboard: true});
+        };
+
+        //下一个
+
+        var nextStudent = function (that) {
+            var rowObject = new Array();
+            var nets = $(that).parents('tr').nextAll();
+            nets.each(function (index,value) {
+                var tdNet = $(value).find('.add').attr('data-row');
+                var rowNet = unescape(tdNet);
+                var rowJsonNext = jQuery.parseJSON(rowNet);
+                rowObject[index] = rowJsonNext;
+            });
+            return rowObject;
+        };
+
+        var rowsData;
+        $('#getNextStudent').click(function () {
+            var dataIndex = $(this).attr('data-index');
+            //console.log(rowsData,dataIndex);
+            var rowNextJson = $.inArray(dataIndex,rowsData) ? rowsData[dataIndex]: false;
+            if(rowNextJson) {
+                $.each(rowNextJson, function (index, value) {
+                    $('#update_' + index).val(value);
+                });
+                $(this).attr('data-index', Number(dataIndex) + 1);
+
+            }else{
+                $.AngelaAutoTips({
+                    msg : ' 数据没了，请翻下一页', //显示的消息
+                    type : 'warning'		   //提示类型（1、success 2、error 3、warning）
+                });
+            }
+        });
+        
+    </script>
+{% endblock %}

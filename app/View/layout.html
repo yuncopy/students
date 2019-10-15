@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{website.title}}</title>
+    <meta name="keywords" content="{{website.keywords}}" />
+    <meta name="description" content="{{website.description}}">
+    <link rel="shortcut icon" href="{{url('/favicon.ico')}}"> 
+    <link href="{{url('/assets/css/bootstrap.min.css?v=3.3.6')}}" rel="stylesheet">
+    <link href="{{url('/assets/css/font-awesome.css?v=4.4.0')}}" rel="stylesheet">
+    
+     <!-- Data Tables -->
+    <link href="{{url('/assets/css/plugins/dataTables/dataTables.bootstrap.css')}}" rel="stylesheet">
+    
+    <link href="{{url('/assets/css/animate.css')}}" rel="stylesheet">
+    <link href="{{url('/assets/css/style.css?v=4.1.0')}}" rel="stylesheet">
+    
+   
+    <!-- 全局js -->
+    <script src="{{url('/assets/js/jquery.min.js?v=2.1.4')}}"></script>
+    <script src="{{url('/assets/js/bootstrap.min.js?v=3.3.6')}}"></script>
+    
+    <!-- 顶部提示 -->
+    <link href="{{url('/assets/js/plugins/msgTips/topmsgTips.css')}}" rel="stylesheet">
+    <script src="{{url('/assets/js/plugins/msgTips/topmsgTips.js')}}"></script>
+    <style>.dataTables_filter{display: none;/* 统一隐藏表格查找表单*/} </style>
+    <!--样式区块-->
+    {% block css %}
+    
+    {% endblock %}
+    
+</head>
+
+<!--内容区块-->
+{% block content %}
+
+{% endblock %}
+
+<!--脚本区块-->
+{% block script %}
+
+{% endblock %}
+<script type="text/javascript">
+$(document).ready(function(){
+    // 处理登录信息过期，跳转问题
+    $(document).ajaxComplete(function(event,request, settings){
+        var json = request.responseText; 
+        var rowJson = jQuery.parseJSON(json);
+        if(rowJson.status == 888){ // 登录信息，超时
+            window.top.location = json.data;
+        }else if(rowJson.status == 999){  // 权限不足，提示
+            layer.msg(rowJson.message, {icon: 5});
+        }else if(rowJson.status == 8899){  // 未添加路由信息
+            layer.msg(rowJson.message, {icon: 4});
+        }
+    });
+});
+</script>
+</html>

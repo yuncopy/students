@@ -1,0 +1,95 @@
+<!--统一模态框页面-->
+
+<!--导出数据 #studentExport-->
+<div class="modal inmodal fade" id="studentExport" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                    <span class="sr-only">关闭</span>
+                </button>
+                <h2 class="modal-title">导出学生</h2>
+            </div>
+            <div class="modal-body">
+                <p>
+                    您确定要导出学生Excel表格吗？
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a id='studentExportButton' href="{{url('/student/export.html')}}"><button  type="button" class="btn btn-primary">确定</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--导入数据 #studentImport-->
+
+<div class="modal inmodal fade" id="studentImport" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                    <span class="sr-only">关闭</span>
+                </button>
+                <h2 class="modal-title">导入学生</h2>
+            </div>
+            <div class="modal-body">
+                <div class="ibox-title">
+                    <h5>批量导入学生说明</h5>
+                </div>
+                <div class="ibox-content">
+                    <ul>
+                        <li>上传之前一定要下载模板，否则上传失败 <a href="{{url('/assets/student_template.xls')}}">格式模板下载</a></li> 
+                        <li>学生编号由系统自动生成，已存在以往学期中的学生将使用原来的编号。</li>
+                        <li>所有选项都是<code>必填项</code>,否则导入数据失败</li>
+                        <li>所有数据字段以<code>文本格式</code>上传，尽量不要出现科学计数</li>
+                        <li>设置文本格式：全选[Ctrl+A]->右键->设置单元格格式->数字选项，选中文本</li>
+                        <li><h5>模板说明</h5>
+                            <ul>
+                                <li><p class="text-success">学生学号：保证唯一性</p></li>
+                                <li><p class="text-success">学生邮箱：有效邮箱性</p></li>
+                                <li><p class="text-success">性别：（1女，2男 ,3保密） </p></li>
+                                <li><p class="text-success">学期ID：<a onClick="showSemesterID();"> <i class="fa fa-arrows"></i> 查看 (不明确，请填0)</a></p></li>
+                                <li><p class="text-success">导师ID：<a onClick="showTutorID();"> <i class="fa fa-arrows"></i> 查看 (不明确，请填0)</a></p></li>
+                            </ul>
+                        </li>
+                        <li><h5>注意事项</h5>
+                            <ul>
+                                <li><p class="text-danger">绝对不能修改表头信息，否则导入失败</p></li>
+                                <li><p class="text-danger">请删除模板示例数据，按照示例数据填写内容</p></li>
+                                <li><p class="text-danger">导入数据建议一次不要超过10万条。</p></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="col-sm-10">
+                        <div id="uploader" class="wu-example">
+                            <div id="thelist" class="uploader-list"></div>
+                            <div class="btns">
+                                <div id="picker">选择文件</div>
+                                <button id="ctlBtn" class="btn btn-default">开始上传</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a><button  id="BtnstudentImport" type="button" class="btn btn-primary">确定导出</button></a>
+                <!--p class="text-primary">在导入过程中，请勿关闭浏览器</p-->
+                <div style="display: none;" id="studentImportwave" class="sk-spinner sk-spinner-wave">
+                    <div class="sk-rect1"></div>
+                    <div class="sk-rect2"></div>
+                    <div class="sk-rect3"></div>
+                    <div class="sk-rect4"></div>
+                    <div class="sk-rect5"></div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

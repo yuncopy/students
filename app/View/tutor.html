@@ -1,0 +1,485 @@
+{% extends "layout.html" %}
+{% block css %}
+<style>
+ .form-horizontal select.m-b{padding-top: 3px}
+</style>
+{% endblock %}
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>导师管理 <small>导师列表</small></h5>
+                        <div class="ibox-tools"></div>
+                    </div>
+                    <div class="col-xs-5 col-md-5">
+                        <button type="button" id="tutorAddBtn"  class="btn btn-w-m btn-primary"><i class="fa fa-plus-circle"></i> 新增导师</button></a>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <div class="input-group m-b">
+                            <div class="input-group-btn">
+                                <button data-toggle="dropdown" class="btn btn-white" type="button" aria-expanded="false">
+                                   查询条件
+                                </button>
+                            </div>
+                            <input placeholder="导师账号 / 导师姓名 " type="text" class="form-control" name="" value=""  id='tablesSearch'>
+                            <span class="input-group-btn"><button  id="searchButton" type="button" class="btn btn-primary">搜索</button></span>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <table id="dataTables" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>导师编号</th>
+                                    <th>导师账号</th>
+                                    <th>导师姓名</th>
+                                    <th>导师职称</th>
+                                    <th>导师邮箱</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>导师编号</th>
+                                    <th>导师账号</th>
+                                    <th>导师姓名</th>
+                                    <th>导师职称</th>
+                                    <th>导师邮箱</th>
+                                    <th>操作</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--编辑导师--> 
+    <div class="modal inmodal fade" id="tutorUpdate" tabindex="-1" role="dialog"    aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">编辑导师</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="tutorFormUpdate">
+                            <div class="form-group">
+                                <input id="update_id" name="id" value="" class="form-control" type="hidden">
+                                <label class="col-sm-3 control-label">导师账号：</label>
+                                <div class="col-sm-7">
+                                    <input disabled="disabled" id="update_number"  class="form-control" type="text">
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 系统自动生成</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">导师姓名：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_name" name="name" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">电子邮箱：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_email" name="email" class="form-control" type="email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">导师职称：</label>
+                                <div class="col-sm-7">
+                                   <select class="form-control m-b" id="update_tutor_class_id" name="tutor_class_id">
+                                        {% if tutorclass|length > 0 %}
+                                            {% for tutor in tutorclass %}
+                                                <option value="{{ tutor.id|e }}">{{ tutor.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    
+    
+    <!--新增导师-->
+    <div class="modal inmodal fade" id="tutorAdd" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">新增导师</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="tutorForm">
+                            <div class="form-group">
+                                <input id="number" name="number" value="{{number}}" class="form-control" type="hidden">
+                                <label class="col-sm-3 control-label">导师账号：</label>
+                                <div class="col-sm-7">
+                                    <input disabled="disabled" id="number_show" value="{{number}}"  class="form-control" type="text">
+                                </div>
+                                <div class="col-sm-7 col-sm-offset-3">
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>系统自动生成，可使用该账户登录</span>
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>登录密码是统一配置的，否则是该账号</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">导师姓名：</label>
+                                <div class="col-sm-7">
+                                    <input id="name" name="name" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">电子邮箱：</label>
+                                <div class="col-sm-7">
+                                    <input id="email" name="email" class="form-control" type="email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">导师职称：</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control m-b" name="tutor_class_id">
+                                        {% if tutorclass|length > 0 %}
+                                            {% for tutor in tutorclass %}
+                                                <option value="{{ tutor.id|e }}">{{ tutor.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+        
+    
+
+</body>
+{% endblock %}
+
+{% block script %}
+    <!-- Data Tables -->
+    <script src="{{url('/assets/js/plugins/dataTables/jquery.dataTables.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/dataTables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+    
+    <!-- jQuery Validation plugin javascript-->
+    <script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+    
+    
+<script>
+        
+    $(document).ready(function () {
+        // 新增导师模态框
+        $('#tutorAddBtn').click(function(){
+            $('#tutorAdd').modal({backdrop: 'static', keyboard: true});
+        });
+        // 默认加载
+        dataTablesFunction();
+        // 点击搜索
+        $('#searchButton').click(function(){
+            var Tables = dataTablesFunction();
+        });
+            
+        // 新增导师
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        var validate = $("#tutorForm").validate({
+            debug: false, //调试模式取消submit的默认提交功能 
+            rules: {
+                name:{
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true/*,
+                    remote:{
+                        url:"{{url('/tutor/unique.html')}}",
+                        type:"post",
+                        data: {
+                            name :'email',
+                            value:function(){
+                               return $('#email').val();
+                            }
+                        }
+                    }*/
+                },
+                tutor_class_id: "required"
+            },
+            messages: {
+                name: {
+                    required: icon + "请输入导师姓名"
+                },
+                email: {
+                    email: icon + "输入正确格式邮箱"
+                },
+                tutor_class_id: {
+                    required: icon + "必须选择导师职称"
+                }
+            },
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/tutor/adddata.html') }}",
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#'+i).after(error);
+                           });
+                       }else{
+                           text = 'error';
+                           if(dataJson.status == 300200 ){
+                               text = 'success';
+                               dataTablesFunction(); // 刷新表格
+                               updateNumber();  //  更新编号
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message,     //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    },
+                    error:function(){
+                        $.AngelaAutoTips({
+                            msg : ' 很抱歉！新增失败，请核实信息是否正确', //显示的消息
+                            type : 'error'		   //提示类型（1、success 2、error 3、warning）
+                        });
+                    }
+                });
+            }
+        });  // 表单验证
+       
+        // 编辑导师
+        var validate = $("#tutorFormUpdate").validate({
+            debug: true, //调试模式取消submit的默认提交功能 
+            rules: {
+                name:{
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                tutor_class_id: "required"
+            },
+            messages: {
+                name: {
+                    required: icon + "请输入导师姓名"
+                },
+                tutor_class_id: {
+                    required: icon + "必须选择导师职称"
+                }
+            },
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/tutor/update.html') }}",
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#update_'+i).after(error);
+                           });
+                       }else{
+                           text = 'error';
+                           if(dataJson.status == 300300 ){
+                               text = 'success';
+                               dataTablesFunction(); // 刷新表格
+                               var t2 = window.setTimeout(function(){
+                                    $('#tutorUpdate').modal('hide');  // 关闭模特框
+                               },5000);//使用字符串执行方法 
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message,     //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    }
+                });
+            }
+       });  // 表单验证
+    });
+    
+     
+    // 数据表格
+    var dataTablesFunction = function(){
+        var dataTables = $('#dataTables').dataTable({
+             serverSide: true,
+             processing: false,
+             searching: true,
+             destroy: true, //摧毁一个已经存在的Datatables，然后创建一个新的
+             order: [[ 0, "desc" ]],
+             ajax: {
+                type: "POST",
+                dataType: 'json',
+                url: "{{ url('/tutor/getdata.html') }}",
+                data: function(data){
+                    var colvalue = $('#tablesSearch').val(); 
+                    data.search.value = colvalue; // 模糊搜索
+                },
+                complete: function (xhr, ts) {
+                    // 提示处理
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('.dataTables_filter').hide();
+                }
+            },
+            columns: [
+                {"data": "id"},
+                {"data": "number"},
+                {"data": "name"},
+                {"data": "tutor_class_name"},
+                {"data": "email"},
+                {"data": 'action',
+                    "render": function (data, type, full, meta) {
+                        //console.log(full);
+                        var status = full.status;
+                        if(status == 1){
+                            var icon = 'fa fa-times-circle';var title = '注销';
+                        }else{
+                            var icon = 'fa fa-check-circle'; var title = '启用';
+                        }
+                        var button = '<a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" data-row="'+escape(JSON.stringify(full))+'" onClick="update(this)"  title="编辑"  href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>';
+                        button += ' | <a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" data-text="'+title+'" data-status="'+status+'" onClick="cancelstart(this)" title="'+title+'"  href="javascript:void(0);"><i class="'+icon+' text-navy"></i></a>';
+                        button += ' | <a  data-toggle="tooltip" data-placement="right" data-id="'+data+'"title="删除"  onClick="del(this)"  href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>';
+                        //button += ' | <a  data-toggle="tooltip" data-placement="right" onClick="more('+data+')" title="更多"   href="javascript:void(0);"><i class="glyphicon glyphicon-zoom-in text-navy"></i></a>';
+                        return button;
+                    }
+                }
+            ],
+        });
+        return dataTables;
+    };
+        
+        
+        
+    // 更新编号
+    var updateNumber = function(){
+        var number;
+        var next_number=$('#number').val(function(index,value){
+            var number = Number(value)+1;
+            return number;
+        });
+        $("#number_show").val(next_number.val());
+    };
+
+
+
+    // 更新操作
+    var update =function(that){
+        $('#tutorUpdate').modal({backdrop: 'static', keyboard: true});
+        var data = $(that).attr('data-row');
+        var row = unescape(data);
+        var rowJson = jQuery.parseJSON(row); 
+        // 设置数据
+        $.each(rowJson ,function(index,value){
+            if('tutor_class_id'== index){
+                //先清除再设置
+                $('#update_'+index).find("option").removeAttr("selected");
+                $('#update_'+index).find("option[value='"+value+"']").prop("selected",true);  // 解决兼容问题
+            }else{
+                $('#update_'+index).val(value); 
+            }
+        });
+    };
+
+
+     // 删除操作
+    var del = function(that){
+        var id = $(that).attr('data-id');
+        var tr = $(that).parents("tr");
+        tr.addClass('text-muted');
+        layer.alert('你要进行删除导师编号：'+id+' 的记录吗？', {
+            title:'操作提示',
+            icon: 3,
+            closeBtn: 1
+        }, function(index){
+            var delUrl = "{{ url('/tutor/del/"+id+".html')|raw}}";
+            $.get( delUrl , function(data){
+                if(data.status){
+                    tr.remove(); // 删除行
+                    layer.msg( data.message , {icon: 1});
+                }
+            },'json');
+        });
+
+        $('.layui-layer-close').on( 'click', function () {
+            tr.removeClass('text-muted');
+        });
+    };
+
+
+    // 启用和注销操作
+    var cancelstart  = function(that){
+        
+        var id = $(that).attr('data-id');
+        var status = $(that).attr('data-status');
+        var text = $(that).attr('data-text');
+        var tr = $(that).parents("tr");
+        tr.addClass('text-success');
+        layer.alert('你要进行'+text+'导师编号：'+id+' 的记录吗？', {
+            title:'操作提示',
+            icon: 3,
+            closeBtn: 1
+        }, function(index){
+            var delUrl = "{{ url('/tutor/cancelstart/"+id+"/"+status+".html')|raw}}";
+            $.get( delUrl , function(data){
+                if(data.status){
+                    layer.msg( data.message , {icon: 1});
+                    dataTablesFunction();
+                }
+            },'json');
+            
+        });
+
+        $('.layui-layer-close').on( 'click', function () {
+            tr.removeClass('text-success');
+        });
+    };
+    
+    // 更多
+    var more = function(){
+        
+    };
+        
+</script>
+{% endblock %}

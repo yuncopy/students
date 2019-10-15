@@ -1,0 +1,108 @@
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-info " href="#"><i class="fa fa-bars"></i> </a>
+           
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+           
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                  <i class="fa fa-user"></i>欢迎，{{login.username}}  <i class="fa fa-angle-double-right"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-alerts">
+                    <li>
+                        <a data-toggle="modal" data-target="#passModal" href="#">
+                            <div>
+                                <i class="fa fa-lock fa-fw"></i> 修改密码
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                </ul>
+            </li>
+            <!--退出-->
+            <li class="dropdown">
+                <a class="count-info" href="{{url('/login/logout.html')}}">
+                    <i class="fa fa-power-off"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+</div>
+
+<div class="modal inmodal" id="passModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title">修改密码</h5>
+            </div>
+            <div class="modal-body">
+                <div class="ibox-content">
+                    <form class="form-horizontal" id="passForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">当前密码：</label>
+                            <div class="col-sm-8">
+                                <input id="pass1" name="pass1" type="password" placeholder="输入当前密码" class="form-control"> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">设置密码：</label>
+                            <div class="col-sm-8">
+                                <input id="pass2" name="pass2" type="password" placeholder="仅能设置字母、数字、@#字符，6~16个字符" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">确认密码：</label>
+                            <div class="col-sm-8">
+                                <input id="pass3" name="pass3" type="password" placeholder="确认设置的密码，请保持一致" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-8">
+                                <button id="confirmPassBtn" class="btn btn-sm btn-info" type="button">确定修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function (){
+            $('#confirmPassBtn').click(function(){
+                var data = $("#passForm").serialize();
+                $.post("{{url('/user/pass.html')}}",data ,function(mes){
+                    var message = mes.message;
+                    if(mes.status == 100601){
+                        message = {"pass1":message};
+                    }else if(mes.status == 100602){
+                        message = {"pass3":message};
+                        passMessage(message);
+                    }else if( mes.status == 100600){
+                        $.AngelaAutoTips({msg : message, type : 'success'});
+                        var t1 = window.setTimeout(function(){
+                            $('#passModal').modal('hide') ;
+                        },5000);
+                        return false;
+                    }else if( mes.status == 100100){
+                        $.AngelaAutoTips({msg : message, type : 'error'});
+                    }
+                    passMessage(message);
+                },'json');
+            });
+        });
+        
+        // 密码提示
+        var passMessage = function(message){
+            $.each(message,function(i,v){  // 后端验证提示
+                var error ='<span class="help-block m-b-none" style="color:red;"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                $('#'+i).after(error);
+            });
+            var t1 = window.setTimeout(function(){
+                $('#passForm').find('.help-block').remove();
+            },3000); 
+        };
+    </script>
+</div>

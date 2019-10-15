@@ -1,0 +1,319 @@
+{% extends "layout.html" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{url('/assets/css/plugins/webuploader/webuploader.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url('/assets/css/plugins/webuploader/webuploader_excel.css')}}">
+
+ <style>.form-horizontal select.m-b{padding-top: 3px}</style>
+ 
+{% endblock %}
+{% block content %}
+{{ include('modalwindow.html') }}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>学生管理 <small> 新增学生</small></h5>
+                        <div class="ibox-tools">
+                           
+                        </div>
+                    </div>
+                    <div class="col-xs-5 col-md-5">
+                        <a href="{{url('/student/index.html')}}"><button type="button" class="btn btn-w-m btn-success"><i class="fa fa-mail-reply"></i> 返回列表</button></a>
+                        <button data-toggle="modal" data-target="#studentImport" type="button"type="button" class="btn btn-w-m btn-info"><i class="fa fa-cloud-upload"></i> 导入Excel</button>
+                    </div>
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="studentForm">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生学号：</label>
+                                <div class="col-sm-7">
+                                    <input id="number" name="number" class="form-control" type="text">
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 请输入学生学号，保证唯一性</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生姓名：</label>
+                                <div class="col-sm-7">
+                                    <input id="username" name="username" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学生性别：</label>
+                                <div class="col-sm-7">
+                                    <select id="gender" class="form-control m-b" name="gender">
+                                        {% if genders|length > 0 %}
+                                            {% for gender in genders %}
+                                                <option value="{{ gender.id|e }}">{{ gender.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">联系电话：</label>
+                                <div class="col-sm-7">
+                                    <input id="my_mobile" name="my_mobile" class="form-control" type="text" aria-required="true" aria-invalid="true" class="error">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">电子邮箱：</label>
+                                <div class="col-sm-7">
+                                    <input id="email" name="email" class="form-control" type="email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">入学时间：</label>
+                                <div class="col-sm-7">
+                                    <input readonly id="enrolment" type="text" name="enrolment" class="laydate-icon form-control layer-date">
+                                </div>
+                            </div>
+                             <div class="form-group">
+                                <label class="col-sm-3 control-label">学生状态：</label>
+                                <div class="col-sm-7">
+                                    <select id="status_id" class="form-control m-b" name="status">
+                                        {% if status|length > 0 %}
+                                            {% for statu in status %}
+                                                <option value="{{ statu.id|e }}">{{ statu.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择学期：</label>
+                                <div class="col-sm-7">
+                                    <select id="semester_id" class="form-control m-b" name="semester_id">
+                                        <option value="">请选择学期</option>   
+                                        {% if semesters|length > 0 %}
+                                            {% for semester in semesters %}
+                                                <option value="{{ semester.id|e }}">[{{ semester.id|e }}] {{ semester.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择导师：</label>
+                                <div class="col-sm-7">
+                                    <select id="tutor_id" class="form-control m-b" name="tutor_id">
+                                        <option value="">请选择导师</option>
+                                        {% if tutors|length > 0 %}
+                                            {% for tutor in tutors %}
+                                                <option value="{{ tutor.id|e }}">[{{ tutor.number|e }}] {{ tutor.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 请选择学生导师 [导师编号] 导师姓名</span>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <div class=" col-sm-3 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ibox-content" style="display:none;" id="semesters-content">
+        <table class="table">
+            <thead><tr><th>学期ID</th><th>学期名称</th></tr></thead>
+            <tbody>
+                 {% if semesters|length > 0 %}
+                    {% for semester in semesters %}
+                        <tr><td><span class="badge badge-danger">{{semester.id|raw}}</span></td><td>{{semester.name|raw}}</td></tr>
+                    {% endfor %}
+                {% endif %}
+            <tbody>
+        </table>
+    </div> 
+     <div class="ibox-content" style="display:none;" id="tutors-content">
+        <table class="table">
+            <thead><tr><th>导师ID</th><th>导师名称</th></tr></thead>
+            <tbody>
+                 {% if tutors|length > 0 %}
+                    {% for tutor in tutors %}
+                        <tr><td><span class="badge badge-danger">{{tutor.id|raw}}</span></td><td>[{{tutor.number|raw}}] {{tutor.name|raw}}</td></tr>
+                    {% endfor %}
+                {% endif %}
+            <tbody>
+        </table>
+    </div>  
+</body>
+{% endblock %}
+{% block script %}
+<!-- jQuery Validation plugin javascript-->
+<script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+<script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+
+<!-- layerDate plugin javascript -->
+<script src="{{url('/assets/js/plugins/layer/laydate/laydate.js')}}"></script>
+
+<script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+
+ <!-- Web Uploader -->
+<script type="text/javascript">
+    var BASE_URL = "{{ url('/assets/js/plugins/webuploader')}}";
+    var UPLOAD_URL = "{{ url('/student/upload.html')}}";
+    var STUDENT_IMPORT_ACTION = "{{ url('/student/import.html')}}";
+    var STUDENT_REPEAT = "{{ url('/student/repeat.html')}}";
+</script>
+<script type="text/javascript" src="{{url('/assets/js/plugins/webuploader/webuploader.min.js')}}"></script>  
+<script type="text/javascript" src="{{ url('/assets/js/plugins/webuploader/siteuploader_excel.js')}}"></script>  
+<script type="text/javascript" src="{{url('/assets/js/student.import.js')}}"></script>    
+
+
+<script>
+$(function($) {
+
+        // 时间选择器
+        //外部js调用
+        laydate({
+            elem: '#enrolment', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+            event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+        });
+        
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        //检测手机号是否正确  
+        jQuery.validator.addMethod("isMobile", function(value, element) {  
+            var length = value.length;  
+            var regPhone = /^1([3578]\d|4[57])\d{8}$/;  
+            return this.optional(element) || ( length == 11 && regPhone.test( value ) );    
+        }, "请正确填写您的手机号码");
+        
+        // 表单验证
+        var validate = $("#studentForm").validate({
+            debug: false, //调试模式取消submit的默认提交功能 
+            rules: {
+                number: {
+                    required: true,
+                    minlength: 2,
+                    remote:{
+                        url:"{{url('/student/unique.html')}}",
+                        type:"post",
+                        data: {
+                            name :'number',
+                            value:function(){
+                               return $('#number').val();
+                            }
+                        }
+                    }
+                },
+                username:{
+                    required: true
+                },
+                my_mobile: {
+                    required: true,
+                    isMobile:true
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    remote:{
+                        url:"{{url('/student/unique.html')}}",
+                        type:"post",
+                        data: {
+                            name :'email',
+                            value:function(){
+                               return $('#email').val();
+                            }
+                        }
+                    }
+                },
+                tutor_id: "required",
+                enrolment: "required",
+                semester_id:"required"
+            },
+            messages: {
+                number: {
+                    required: icon + "请输入您的用户名",
+                    minlength: icon + "用户名必须两个字符以上",
+                    remote: icon + "输入学生学号已存在"
+                },
+                username: {
+                    required: icon + "请输入学生姓名"
+                },
+                my_mobile: {
+                    required: icon + "请输入联系手机号"
+                },
+                email: {
+                    remote: icon + "输入学生学号已存在"
+                },
+                tutor_id: {
+                    required: icon + "必须选择导师"
+                },
+                semester_id: {
+                    required: icon + "必须选择学期"
+                },
+                enrolment: {
+                    required: icon + "请选择学生入学时间"
+                }
+            },
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/student/adddata.html') }}",
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#'+i).after(error);
+                           });
+                       }else{
+                           text = 'error';
+                           if(dataJson.status == 200200){
+                              text = 'success';
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message, //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    },
+                    error:function(){
+                        $.AngelaAutoTips({
+                            msg : ' 很抱歉！新增失败，请核实信息是否正确', //显示的消息
+                            type : 'error'		   //提示类型（1、success 2、error 3、warning）
+                        });
+                    }
+                });
+            }
+        });  // 表单验证
+    });
+    
+    // 查看学期ID
+    var showSemesterID = function(){
+        var semester_html= $('#semesters-content').html();
+        layer.open({
+          type: 1,
+          skin: 'layui-layer-rim', //加上边框
+          area: ['420px', '320px'], //宽高
+          content: '<div class="ibox-content">'+semester_html+'</div>'
+        });  
+    };
+
+    // 查看导师ID
+    var showTutorID = function(){
+        var tutors_html=$('#tutors-content').html();
+        layer.open({
+        type: 1,
+        skin: 'layui-layer-rim', //加上边框
+        area: ['420px', '320px'], //宽高
+        content: '<div class="ibox-content">'+tutors_html+'</div>'
+      });  
+    };
+   
+</script>
+{% endblock %}

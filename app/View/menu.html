@@ -1,0 +1,526 @@
+{% extends "layout.html" %}
+{% block css %}
+ <link rel="stylesheet" type="text/css" href="{{url('/assets/js/plugins/select2/css/select2.min.css')}}">
+<style>
+.form-horizontal select.m-b{padding-top: 3px}
+.tr-close{
+   display: none;
+}
+span.select2-container {
+    z-index:10050;
+}
+</style>
+{% endblock %}
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>菜单管理 <small>菜单列表</small></h5>
+                        <div class="ibox-tools"></div>
+                    </div>
+                    <div class="col-xs-5 col-md-5">
+                        
+                        <!--新增按钮-->
+                        <button type="button" onClick="add(this)"  class="btn btn-w-m btn-primary"><i class="fa fa-plus-circle"></i> 新增菜单</button></a>
+                        <a onClick="javascript:window.location.reload();"><button type="button" class="btn btn-w-m btn-info"><i class="fa fa-undo"></i> 刷新页面</button></a>
+                    
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <div class="input-group m-b">
+                            <div class="input-group-btn">
+                                <button data-toggle="dropdown" class="btn btn-white" type="button" aria-expanded="false">
+                                   查询条件
+                                </button>
+                            </div>
+                            <input placeholder="菜单题目 " type="text" class="form-control" name="" value=""  id='tablesSearch'>
+                            <span class="input-group-btn"><button  id="searchButton" type="button" class="btn btn-primary">搜索</button></span>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <table id="dataTables" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>名称</th>
+                                    <th>权限位</th>
+                                    <th>状态</th>
+                                    <th>添加时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>名称</th>
+                                    <th>权限位</th>
+                                    <th>状态</th>
+                                    <th>添加时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+
+    <!--新增-->
+    <div class="modal inmodal fade" id="menuAdd" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">新增菜单</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="menuForm">
+   
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单名称：</label>
+                                <div class="col-sm-7">
+                                    <input id="name" name="name" value="" class="form-control" type="text">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">权限位：</label>
+                                <div class="col-sm-7">
+                                    <select id="permission_id" class="form-control m-b" name="permission_id" style="width: 100%">
+                                        <option value="">选择权限位</option>
+                                        {{ option | raw}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单图标：</label>
+                                <div class="col-sm-7">
+                                    <input id="icon" name="icon" value="" class="form-control" type="text">
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>如填写：fa fa-paypal , <a target="_blank"  href="{{url('/menu/fontawesome.html')}}">单击查看图标</a></span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    
+    
+    <!--编辑-->
+    <div class="modal inmodal fade" id="menuUpdate" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">编辑菜单</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="menuFormUpdate">
+                           <input id="update_id" name="id" value="" class="form-control" type="hidden">
+                           <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单名称：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_name" name="name" value="" class="form-control" type="text">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">权限位：</label>
+                                <div class="col-sm-7">
+                                    <select id="update_permission_id" class="form-control m-b"  name="permission_id" style="width: 100%">
+                                        <option value="">选择权限位</option>
+                                        {{ option | raw}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单图标：</label>
+                                <div class="col-sm-7">
+                                    <input id="update_icon" name="icon" value="" class="form-control" type="text">
+                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>如填写：fa fa-paypal , <a target="_blank"  href="{{url('/menu/fontawesome.html')}}">单击查看图标</a></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-6 col-sm-offset-3">
+                                    <button class="btn btn-default" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+   
+
+</body>
+{% endblock %}
+
+{% block script %}
+    <!-- Data Tables -->
+    <script src="{{url('/assets/js/plugins/dataTables/jquery.dataTables.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/dataTables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+    
+    <script src="{{url('/assets/js/plugins/select2/js/select2.min.js')}}"></script>
+    
+    <!-- jQuery Validation plugin javascript-->
+    <script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+    
+
+<script>
+        
+    $(document).ready(function () {
+        
+        dataTablesFunction();  // 默认模态框
+
+        // 点击搜索
+        $('#searchButton').click(function(){
+            var Tables = dataTablesFunction();
+        });
+        
+        // 权限位选择
+        $("#permission_id").select2({
+            dropdownParent: $("#menuAdd"),
+            placeholder: "请选择权限位"
+        });  // 新增
+        $("#update_permission_id").select2({
+            dropdownParent: $("#menuUpdate"),
+            placeholder: "请选择权限位"
+        }); // 编辑
+        
+            
+        // 新增课程
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        var validate = $("#menuForm").validate({
+            debug: false, //调试模式取消submit的默认提交功能 
+            rules: {
+                name:{required: true},
+                permission_id:{required: true}
+            },
+            messages: {
+                name:{required: icon + "请填写菜单名称"},
+                permission_id:{required: icon + "请选择菜单权限位"}
+            },
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/menu/adddata.html') }}",
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#'+i).after(error);
+                           });
+                       }else{
+                           text = 'error';
+                           if(dataJson.status == 102200 ){
+                               text = 'success';
+                               dataTablesFunction(); // 刷新表格
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message,     //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    },
+                    error:function(){
+                        $.AngelaAutoTips({
+                            msg : ' 很抱歉！新增失败，请核实信息是否正确', //显示的消息
+                            type : 'error'		   //提示类型（1、success 2、error 3、warning）
+                        });
+                    }
+                });
+            }
+        });  // 表单验证
+       
+        // 编辑课程
+        var validate = $("#menuFormUpdate").validate({
+            debug: true, //调试模式取消submit的默认提交功能 
+            rules: {
+                name:{required: true},
+                method:{required: true},
+                route:{required: true,isRote:true}
+            },
+            messages: {
+                name:{required: icon + "请填写名称"},
+                method:{required: icon + "请选择方法"},
+                route:{required: icon + "请填写路由"}
+            },
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var datas = $(form).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/menu/update.html') }}",
+                    data: datas,
+                    dataType: "json",
+                    success: function(dataJson){
+                        if(dataJson.valid === 0){
+                           var message = dataJson.message;
+                           $.each(message,function(i,v){  // 后端验证提示
+                               var error ='<span class="help-block m-b-none"><i class="fa fa-times-circle"></i> '+v+'</span>';
+                               $('#update_'+i).after(error);
+                           });
+                       }else{
+                           text = 'error';
+                           if(dataJson.status == 102600 ){
+                               text = 'success';
+                               dataTablesFunction(); // 刷新表格
+                               var t2 = window.setTimeout(function(){
+                                    $('#menuUpdate').modal('hide');  // 关闭模特框
+                               },5000);//使用字符串执行方法 
+                           }
+                           $.AngelaAutoTips({
+                               msg : dataJson.message,     //显示的消息
+                               type : text		   //提示类型（1、success 2、error 3、warning）
+                           });
+                       }
+                    }
+                });
+            }
+       });  // 表单验证
+    });
+    
+     
+    // 数据表格
+    var dataTablesFunction = function(){
+        var dataTables = $('#dataTables').dataTable({
+             serverSide: true,
+             processing: false,
+             searching: true,
+             destroy: true, //摧毁一个已经存在的Datatables，然后创建一个新的，
+             paging: false, // 禁止分页,
+             lengthChange: false,
+             order: [[ 0, 'asc' ]],
+             ajax: {
+                type: "POST",
+                dataType: 'json',
+                url: "{{ url('/menu/getdata.html') }}",
+                data: function(data){
+                    var colvalue = $('#tablesSearch').val(); 
+                    data.columns[1]['search']['value'] = colvalue; // 指定列进行搜索
+                },
+                complete: function (xhr, ts) {
+                    
+                    $('[data-toggle="tooltip"]').tooltip();// 提示处理
+                    $('.dataTables_filter').hide(); // 隐藏搜索框
+                    var trs = openTr(); // 执行隐藏和展开
+                }
+            },
+            rowCallback: function( row, data, index ) {
+                var children = data.children;
+                var len = children.length;
+                var pid = data.pid;
+                var id = data.id;
+                $(row).attr("id", id).attr('class','tr-open');
+                
+                if(pid == 0){  // 顶级分类
+                    
+                }else{  // 子级分类
+                    $(row).addClass('tr-close');
+                    $(row).addClass('tr-open-'+pid);
+                }
+                // 有子级
+                if(len > 0){
+                    $('td:eq(1)', row).html(function(index,value){
+                        return value+ ' <i class="fa fa-caret-down"></i>';
+                    });
+                }
+            },
+            columns: [
+                {"data": "id","searchable": false },
+                {"data": "name","searchable": false},
+                {"data": "permission_name","orderable": false,
+                    "render": function (data, type, full, meta) {
+                        return "<code>"+data+"</code>";
+                    }
+                },
+                {"data": "status","searchable": false ,
+                    "render": function (data, type, full, meta) {
+                        if( data == 1){
+                            var title = '启用';
+                        }else{
+                            var title = '关闭';
+                        }
+                        return title;
+                    }
+                },
+                {"data": "create_time","searchable": false },
+                {"data": 'action',
+                    "render": function (data, type, full, meta) {
+                       // console.log(full);
+                        var status = full.status;
+                        var children = full.children;
+                        if( status == 1){
+                            var icon = 'fa fa-times-circle';var title = '关闭';
+                        }else{
+                            var icon = 'fa fa-check-circle';var title = '启用';
+                        }
+                        var button = '<a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" data-row="'+escape(JSON.stringify(full))+'" onClick="update(this)"  title="编辑"  href="javascript:void(0);"><i class="fa fa-pencil-square-o text-navy"></i></a>';
+                        button += ' | <a  data-toggle="tooltip" data-placement="right"  data-id="'+data+'" data-text="'+title+'" data-status="'+status+'" onClick="cancelstart(this)" title="'+title+'"  href="javascript:void(0);"><i class="'+icon+' text-navy"></i></a>';
+                        if(children.length < 1){
+                            button += ' | <a  data-toggle="tooltip" data-placement="right" data-id="'+data+'" onClick="del(this)"  href="javascript:void(0);"><i class="glyphicon glyphicon-trash text-navy"></i></a>';
+                        }
+                        button += ' | <a  data-toggle="tooltip" data-placement="right" data-id="'+data+'" data-row="'+escape(JSON.stringify(full))+'" onClick="add(this)"  href="javascript:void(0);"><i class="fa fa-plus text-navy"></i></a>';
+                        return button;
+                    },"searchable": false,"orderable": false
+                }
+            ]
+        });
+        return dataTables;
+    };
+    
+    // 处理展开操作
+    var openTr = function(){
+        //顶级打开
+        $('.tr-open').off().on("click", function(event) {
+            var id = $(this).attr('id');
+            $('tr.tr-open-'+id).slideToggle("fast");
+            var sid = $('tr.tr-open-'+id).attr('id');
+            if(sid){
+                $('tr.tr-open-'+sid+':visible').slideUp("fast");
+            }
+            return true;
+        });
+    };
+    
+        
+    var add = function(that){
+        var data = $(that).attr('data-row');
+        if(data){
+            var row = unescape(data);
+            var rowJson = jQuery.parseJSON(row); 
+            var pid = rowJson.id;
+            var pname = rowJson.name;
+            //console.log(rowJson);
+            var pidInput = '<div class="form-group" id="pid-group">';
+                pidInput += '<input id="add_pid" name="pid" value="'+pid+'"  type="hidden">';
+                pidInput += '<label class="col-sm-3 control-label">父类名称：</label>';
+                    pidInput += '<div class="col-sm-7">';
+                        pidInput += '<input value="'+pname+'" disabled="disabled" class="form-control" type="text" aria-required="true" aria-invalid="false">';
+                    pidInput += '</div>';
+                pidInput += '</div>';
+            $("#menuForm").prepend(pidInput);  // 添加表单元素
+        };
+        
+        var modalObject = $('#menuAdd');
+        modalObject.modal({backdrop: 'static', keyboard: true});
+        modalObject.on('hidden.bs.modal', function (e) {
+            $("#pid-group").remove(); // 关闭后删除PID表单
+        });
+    };
+  
+
+    // 更新操作
+    var update =function(that){
+        var data = $(that).attr('data-row');
+        var row = unescape(data);
+        var rowJson = jQuery.parseJSON(row); 
+        $.each(rowJson ,function(index,value){
+            if(index === 'permission_id'){
+               //$('#update_'+index).find('option[value="'+value+'"]').prop("selected", true);
+               var options = value.split(',');
+               $('#update_'+index).val(options).trigger('change');
+            }else{
+                if(typeof(value) == 'string'){
+                    var reg=new RegExp("└─ |　　 |│　 |├─ ","gmi");
+                    value = value.replace(reg, '');
+                    value = $.trim(value);
+                }
+                $('#update_'+index).val(value); // 设置数据
+            }
+        });
+        $('#menuUpdate').modal({backdrop: 'static', keyboard: true});
+    };
+    
+     // 删除操作
+    var del = function(that){
+        var id = $(that).attr('data-id');
+        var tr = $(that).parents("tr");
+        tr.addClass('text-muted');
+        layer.alert('你要进行删除ID：'+id+' 的记录吗？', {
+            title:'操作提示',
+            icon: 3,
+            closeBtn: 1
+        }, function(index){
+            var delUrl = "{{ url('/menu/del/"+id+".html')|raw}}";
+            $.get( delUrl , function(data){
+                if(data.status){
+                    tr.remove(); // 删除行
+                    layer.msg( data.message , {icon: 1});
+                }
+            },'json');
+        });
+
+        $('.layui-layer-close').on( 'click', function () {
+            tr.removeClass('text-muted');
+        });
+    };
+
+
+    // 启用和注销操作
+    var cancelstart  = function(that){
+        
+        var id = $(that).attr('data-id');
+        var status = $(that).attr('data-status');
+        var text = $(that).attr('data-text');
+        var tr = $(that).parents("tr");
+        tr.addClass('text-success');
+        layer.alert('你要进行'+text+'ID：'+id+' 的记录吗？', {
+            title:'操作提示',
+            icon: 3,
+            closeBtn: 1
+        }, function(index){
+            var resultURL = "{{ url('/menu/cancelstart/"+id+"/"+status+".html')|raw}}";
+            $.get( resultURL , function(data){
+                if(data.status){
+                    layer.msg( data.message , {icon: 1});
+                    dataTablesFunction();
+                }
+            },'json');
+            
+        });
+
+        $('.layui-layer-close').on( 'click', function () {
+            tr.removeClass('text-success');
+        });
+    };
+    
+    
+    // 查看更多
+    var more = function(that){
+        console.log(that);
+    };
+
+        
+</script>
+{% endblock %}

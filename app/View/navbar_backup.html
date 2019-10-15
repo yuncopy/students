@@ -1,0 +1,142 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <!--图标 http://www.fontawesome.com.cn/faicons/ -->
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs" style="font-size:20px;">
+                                <i class="fa fa-area-chart"></i>
+                                <strong class="font-bold"><!--教务系统--></strong>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+                <div class="logo-element"><!--教务系统-->
+                </div>
+            </li>
+            <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                <span class="ng-scope">分类</span>
+            </li>
+            <li>
+                <a class="J_menuItem" href="{{url('/home/admin.html')}}">
+                    <i class="fa fa-home"></i>
+                    <span class="nav-label">主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-mortar-board"></i>
+                    <span class="nav-label">学生管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{{url('/student/index.html')}}">学生列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{{url('/student/adddata.html')}}">新增学生</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="mailbox.html"><i class="fa fa-line-chart"></i> <span class="nav-label">成绩管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/fraction/index.html')}}">学生成绩</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-flask"></i> <span class="nav-label">选课管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/elective/index.html')}}">选课列表</a></li>
+                    <li><a class="J_menuItem" href="{{url('/elective/select.html')}}">已选列表</a></li>
+                </ul>
+            </li>
+            <li class="line dk"></li>
+            <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                <span class="ng-scope">分类</span>
+            </li>
+            
+            <li>
+                <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">教师管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/teacher/index.html')}}">教师列表</a> 
+                    </li>
+                    <li><a class="J_menuItem" href="{{url('/course/index.html')}}">课程安排</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">课程管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/subject/index.html')}}">课程列表</a>
+                    </li>
+                </ul>
+            </li>
+            
+            
+            <li class="line dk"></li>
+            <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                <span class="ng-scope">分类</span>
+            </li>
+            <li>
+                <a href="#"><i class="fa  fa-institution"></i> <span class="nav-label">导师管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/tutor/index.html')}}">导师列表</a></li>
+                    <li><a class="J_menuItem" href="{{url('/tutor/class.html')}}">导师类型</a></li>
+                </ul>
+            </li>
+             <li>
+                <a href="#"><i class="fa fa-list"></i> <span class="nav-label">开题管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/proposal/index.html')}}">开题列表</a>
+                    </li>
+                </ul>
+            </li>
+             <li>
+                <a href="#"><i class="fa fa-suitcase"></i> <span class="nav-label">答辩管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/defense/index.html')}}">答辩列表</a>
+                    </li>
+                </ul>
+            </li>
+            
+            
+            <li class="line dk"></li>
+            <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                <span class="ng-scope">分类</span>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">系统管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/user/index.html')}}">用户管理</a>
+                    </li>
+                    <li><a class="J_menuItem" href="{{url('/role/index.html')}}">角色管理</a>
+                    </li>
+                    <li><a class="J_menuItem" href="{{url('/permission/index.html')}}">权限管理</a>
+                    </li>
+                    <li><a class="J_menuItem" href="{{url('/menu/index.html')}}">菜单管理</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-cutlery"></i> <span class="nav-label">网站管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/website/index.html')}}">站点信息</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-cutlery"></i> <span class="nav-label">类别管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a class="J_menuItem" href="{{url('/semester/index.html')}}">学期管理</a></li>
+                    <li><a class="J_menuItem" href="{{url('/category/index.html')}}">课程相关</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</nav>

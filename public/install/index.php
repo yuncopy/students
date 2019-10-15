@@ -297,7 +297,7 @@ class Install{
                 }
                 // 导入sql数据并创建表
                 $sql_str=file_get_contents('./balecms.sql');
-                $sql_array=preg_split("/;[\r\n]+/", str_replace('sc_',$data['DB_PREFIX'],$sql_str));
+                $sql_array=preg_split("/;[\r\n]+/", str_replace('mpa_',$data['DB_PREFIX'],$sql_str));
                 $success = 0;
                 $failure = 0;
                 if($sql_array){

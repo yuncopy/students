@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{url('/assets/css/login.css')}}">
+    <style>
+    .m-b-none {
+        margin-bottom: 5px;
+    }
+    .help-block {
+        display: block;margin-top: 5px;
+        margin-bottom: 8px;color: #737373;float: left;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<!--body class="gray-bg">
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+                <h2 class="logo-name">MPA</h2>
+            </div>
+            <h3>欢迎使用 在线选课系统</h3>
+            <form class="m-t m-b-none" role="form" id="loginForm">
+                <div class="form-group">
+                    <input type="text" name="username"   class="form-control" placeholder="登录名称" required="" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="passwd" class="form-control" placeholder="登录密码" required="" aria-required="true">
+                </div>
+                <button type="submit"  class="btn btn-primary block full-width m-b">登 录</button>
+                <p class="text-muted text-center"> <a href="#"><small>忘记密码了？</small></a> | <a href="#">注册一个新账号</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</body-->
+
+<body class="signin gray-bg">
+    <div class="signinpanel middle-box  animated fadeInDown">
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="m-t m-b-none" role="form" id="loginForm">
+                    <h4 class="no-margins">欢迎登录：</h4>
+                    <p class="m-t-md">登录到{{website.title}}</p>
+                    <div class="form-group">
+                        <input type="text" name="username"   class="form-control uname" placeholder="登录名称，区分大小写" required="" aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="passwd" class="form-control pword m-b" placeholder="登录密码，区分大小写" required="" aria-required="true">
+                    </div>
+                    <!--a href="">忘记密码了？</a-->
+                    <button class="btn btn-success btn-block" type="submit" >登录</button>
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <!--div class="pull-left">
+                &copy; 星点工作室
+            </div-->
+        </div>
+    </div>
+</body>
+{% endblock %}
+
+{% block script %}
+<!-- jQuery Validation plugin javascript-->
+<script src="{{url('/assets/js/plugins/validate/jquery.validate.min.js')}}"></script>
+<script src="{{url('/assets/js/plugins/validate/messages_zh.min.js')}}"></script>
+<script>if(window.top !== window.self){ window.top.location = window.location;}</script>
+<script>
+    $(function($) {
+       var validate = $("#loginForm").validate({
+            debug: false, //调试模式取消submit的默认提交功能   
+            submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
+                var data = $(form).serialize();
+                $.post("{{ url('/login/login.html') }}", data ,function(dataJson){
+                    if( dataJson.status == 100200){
+                        window.location.href = dataJson.data;
+                    }else{
+                        // 提示
+                        $.AngelaAutoTips({
+                            msg : dataJson.message, //显示的消息
+                            type : "error"			//提示类型（1、success 2、error 3、warning）
+                        });
+                    }
+                },'json');
+            }
+       });  // 表单验证
+    });
+</script>
+{% endblock %}

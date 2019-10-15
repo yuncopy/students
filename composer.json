@@ -1,0 +1,48 @@
+{
+    "name": "yuncopy/mpa",
+    "description": "Framework For PHPer",
+    "keywords": ["framework", "xuteng", "gaara"],
+    "license": "MIT",
+    "type": "project",
+    "authors":[
+        {
+            "name": "angela",
+            "email": "yuncopy@sina.com"
+        }
+    ],
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer"
+        }
+    },
+    "require": {
+        "bramus/router": "~1.2",
+        "doctrine/dbal": "^2.6",
+        "illuminate/database": "5.4.*",
+        "illuminate/events": "5.4.*",
+        "illuminate/pagination": "5.4.*",
+        "livecontrol/eloquent-datatable": "^0.1.5",
+        "monolog/monolog": "^1.23",
+        "php-curl-class/php-curl-class": "^8.0",
+        "phpoffice/phpexcel": "^1.8",
+        "twig/twig": "1.35.0"
+    },
+    "require-dev": {
+        "filp/whoops": "^2.1",
+        "symfony/var-dumper": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap":[
+        ],
+         "files":[
+            "app/functions.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

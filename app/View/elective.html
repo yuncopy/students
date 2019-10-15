@@ -1,0 +1,500 @@
+{% extends "layout.html" %}
+{% block css %}
+ <link rel="stylesheet" type="text/css" href="{{url('/assets/css/plugins/iCheck/custom.css')}}">
+ <link rel="stylesheet" type="text/css" href="{{url('/assets/js/plugins/select2/css/select2.min.css')}}">
+<style>
+ .form-horizontal select.m-b{padding-top: 3px}
+ .select2-container,span.select2-selection--single{ border: 1px solid #cfdadd !important;border-radius:0px;}
+ span.select2-container {
+    z-index:10050;
+}
+</style>
+{% endblock %}
+{% block content %}
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>在线选课 <small>选课列表</small></h5>
+                        <div class="ibox-tools">
+                            
+                        </div>
+                    </div>
+                    <div class="col-xs-5 col-md-5">
+                        <a href="{{url('/elective/select.html')}}"><button type="button" class="btn btn-w-m btn-info"><i class="fa fa-mail-reply"></i> 已选课程</button></a>
+
+                        {% if stu_result == 1 %}
+                            <button type="button" class="btn btn-w-m btn-success"><i class="fa fa-check"></i>学生已毕业</button>
+                        {% else %}
+                           <a href="javascript:void(0);"><button  onClick="add(this)" id="selectedBtn" disabled="disabled" type="button" class="btn btn-w-m btn-success"><i class="fa fa-check-square"></i> 确定选课</button></a>
+                            <!--未分配ID管理员替学生选课-->
+                            {% if selected == 1 %}
+                                <a href="javascript:void(0);"><button  onClick="selectedStu(this)" id="studentBtn"  type="button" class="btn btn-w-m btn-info"><i class="fa fa-mortar-board"></i> 选择学生</button></a>
+                            {% endif %}
+                        {% endif %}
+                        <a {{W(78)|raw}} href="{{url('/course/index.html')}}"><button type="button" class="btn btn-w-m btn-danger"><i class="fa fa-exclamation-triangle"></i> 走去删除</button></a>
+                    </div>
+                    
+                    <div class="col-xs-6 col-md-6">
+                        <div class="input-group m-b">
+                            <div class="input-group-btn">
+                                <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+                                   查询条件 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a data-name="" href="javascript:void(0);">模糊查询</a></li>
+                                    <li><a data-name="1" href="javascript:void(0);">更多筛选</a></li>
+                                </ul>
+                            </div>
+                            <input placeholder="教师" type="text" class="form-control" name="" value=""  id='tablesSearch'>
+                            <span class="input-group-btn"><button  id="searchButton" type="button" class="btn btn-primary">搜索</button></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xs-12 col-md-12"  id="student_name" style="display:none;">
+                        <a class="btn btn-danger btn-rounded"></a>
+                    </div>  
+                    
+                    <div class="col-xs-12 col-md-12">
+                        <!--更多筛选-->
+                        <form class="form-horizontal" id="searchform" style="display:none;">
+                            <div class="col-xs-5 col-md-5">
+                                <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择学期 <span class="fa fa-navicon"></span></span>
+                                        <select id="semester_id" class="form-control m-b" name="semester_id">
+                                          <option value="">全部</option>
+                                          {% if semesters|length > 0 %}
+                                              {% for semester in semesters %}
+                                                  <option value="{{ semester.id|e }}">{{ semester.name|e }}</option>
+                                              {% endfor %}
+                                          {% endif %}
+                                        </select>
+                                   </div>
+                               </div>
+                               <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择教师 <span class="fa fa-user"></span></span>
+                                        <select id="teacher_id" class="form-control m-b" name="teacher_id">
+                                            <option value="">全部</option>
+                                            {% if teachers|length > 0 %}
+                                                {% for teacher in teachers %}
+                                                    <option value="{{ teacher.id|e }}"> {{ teacher.name|e }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                   </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-5 col-md-5">
+                                <div class="input-group col-md-10">
+                                   <div class="input-group  m-b">
+                                       <span class="input-group-addon">选择科目 <span class="fa fa-calendar"></span></span>
+                                        <select id="subject_id" class="form-control m-b" name="subject_id">
+                                            <option value="">全部</option>
+                                            {% if subjects|length > 0 %}
+                                                {% for subject in subjects %}
+                                                    <option value="{{ subject.id|e }}"> {{ subject.name|e }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                   </div>
+                               </div>
+                                <div class="input-group col-md-10">
+                                   <div {{W(33)}} class="input-group  m-b" >
+                                       <span class="input-group-addon">选择星期 <span class="fa fa-calendar-check-o"></span></span>
+                                        <select id="week_id" class="form-control m-b" name="week_id">
+                                            <option value="">全部</option>
+                                            {% if weeks|length > 0 %}
+                                                {% for week in weeks %}
+                                                    <option value="{{ week.id|e }}"> {{ week.name|e }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                   </div>
+                               </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="ibox-content">
+                        <table id="dataTables" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>学期</th>
+                                    <th>教师</th>
+                                    <th>科目</th>
+                                    <th>学分</th>
+                                    <th {{W(33)}} >星期</th>
+                                    <th {{W(33)}} >上课时间段</th>
+                                    <th>选课起始</th>
+                                    <th {{W(33)}} >教室</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>学期</th>
+                                    <th>教师</th>
+                                    <th>科目</th>
+                                    <th>学分</th>
+                                    <th {{W(33)}} >星期</th>
+                                    <th {{W(33)}} >上课时间段</th>
+                                    <th>选课起始</th>
+                                    <th {{W(33)}} >教室</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if selected == 1 %}
+    <!--选择学生-->
+    <div class="modal inmodal fade" id="selectedStudent" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                        <span class="sr-only">关闭</span>
+                    </button>
+                    <h2 class="modal-title">选择学生</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="defenseForm">
+                    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择学期：</label>
+                                <div class="col-sm-7">
+                                    <select id="semesters_id" class="form-control m-b" name="semester_id">
+                                        <option value="">全部</option>
+                                        {% if semesters|length > 0 %}
+                                            {% for semester in semesters %}
+                                                <option value="{{ semester.id|e }}">{{ semester.name|e }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择学生：</label>
+                                <div class="col-sm-7">
+                                    <select id="select_student_id" class="form-control m-b" name="student_id">
+                                    </select>
+                                </div>
+                            </div>         
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    {% endif %}
+    
+</body>
+{% endblock %}
+
+{% block script %}
+    <!-- Data Tables -->
+    <script src="{{url('/assets/js/plugins/dataTables/jquery.dataTables.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/dataTables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/select2/js/select2.min.js')}}"></script>
+    <script src="{{url('/assets/js/plugins/layer/layer.min.js')}}"></script>
+    <!-- iCheck -->
+    <script src="{{url('/assets/js/plugins/iCheck/icheck.min.js')}}"></script>
+    
+    <script>
+        $(document).ready(function () {
+
+
+
+
+            // 默认加载
+            dataTablesFunction();
+            
+            // 点击搜索
+            $('#searchButton').click(function(){
+                var Tables = dataTablesFunction();
+            });
+            
+            
+            // 下拉框选择
+            $('.dropdown-menu').find('a').click(function(){
+                var column = $(this).attr("data-name");
+                var text = $(this).html();
+                $('.dropdown-toggle').html(text+' <span class="caret"></span>');
+                if(column == '1'){  // 更多条件处理
+                    $('#tablesSearch').attr('disabled','disabled').val('');
+                    $('#searchform').show();
+                }else{
+                    $('#tablesSearch').removeAttr('disabled');
+                    $('#searchform').hide();
+                }
+            });
+             
+            // 显示学期学生
+            $('#semesters_id').change(function(){
+                //获取某一个学期的学生
+                var student  = getStudents(
+                    'select_student_id',
+                    "elective/notselected.html",
+                    {"semester_id": $('#semesters_id').val()}
+                );
+            });
+            
+            //选择学生
+            $('#select_student_id').change(function(){
+                var student = $(this).find("option:selected").text();
+                var studentObject = $('#student_name');
+                studentObject.show();
+                studentObject.find('a').empty().html('当前学生：'+student);
+            });
+            
+        });
+        
+        // 数据表格
+        var dataTablesFunction = function(){
+            var limit = "{{selected}}";  // 管理员角色
+            console.log(limit);
+            var initColumns = [
+                {"data": "id","name":"id","orderable": false,"searchable": false,
+                    "render": function (data, type, full, meta) {
+                        if(full.subject_status == 1 || limit == '1'){
+                            var isDisabled='';
+                        }else{
+                            var isDisabled=' disabled="disabled" ';
+                        }
+                        var button = '<input '+isDisabled+' data-id="'+data+'" type="checkbox"  value="'+data+'" class="i-checks" name="elective[]">';
+                        return button;
+                    }
+                },
+                {"data": "semester_id","name":"semester_id","searchable": true},
+                {"data": "teacher_id","name":"teacher_id","searchable": true},
+                {"data": "subject_id","name":"subject_id","searchable": true},
+                {"data": "subject_credit","name":"subject_credit","searchable": false},
+                {"data": "week_id","name":"week_id","searchable": false,"createdCell": function (td, cellData, rowData, row, col) {
+                    var tdd = "{{W(33)}}";
+                    if(tdd.length > 0){
+                        $(td).remove();// 删除元素
+                    }
+                }},
+                {"data": "interval_id","name":"interval_id","searchable": false,"createdCell": function (td, cellData, rowData, row, col) {
+                    var tdd = "{{W(33)}}";
+                    if(tdd.length > 0){
+                        $(td).remove();// 删除元素
+                    }
+                }},
+                {"data": "start_end_time","name":"start_end_time","searchable": false},
+                {"data": "room_id","name":"room_id","orderable": false,"searchable": false,"createdCell": function (td, cellData, rowData, row, col) {
+                    var tdd = "{{W(33)}}";
+                    if(tdd.length > 0){
+                        $(td).remove();// 删除元素
+                    }
+                }},
+            ];
+            
+
+            var dataTables = $('#dataTables').dataTable({
+                 serverSide: true,
+                 lengthChange:false,
+                 processing: false,
+                 searching: true,
+                 destroy: true, //摧毁一个已经存在的Datatables，然后创建一个新的，
+                 order: [[0, 'desc'],[ 1, 'desc' ],[ 7, 'desc' ]],
+                 ajax: {
+                    type: "POST",
+                    dataType: 'json',
+                    url: "{{ url('/elective/getdata.html') }}",
+                    data: function(data){
+                        var colvalue = $('#tablesSearch').val(); 
+                        if(colvalue){  // 单独教师查询
+                            data.teacher_name = colvalue;
+                        }else{
+                            data.searchdata = $('#searchform').serialize(); // 精准查询
+                        }
+                        /* 模糊查询
+                        var colvalue = $('#tablesSearch').val(); 
+                        if(colvalue){  // 模糊查询
+                            $.each( initColumns ,function(idx,val){
+                               // console.log(val.searchable);
+                                //if(val.searchable){
+                               //     data.columns[idx]['search']['value']= colvalue;
+                               // }
+                            });
+                        }*/
+                    },
+                    complete: function (xhr, ts) {
+                        // 提示处理
+                        $('[data-toggle="tooltip"]').tooltip();
+                        $('.dataTables_filter').hide();
+                        
+                        // 顺序 1 顺序不能调换
+                        if((aIDs.length) > 0){
+                            //console.log(aIDs);
+                            $.each( aIDs ,function(index,value){
+                                $("input[data-id='"+value+"']").iCheck('check');
+                            });
+                        }
+                        // 顺序 2 顺序不能调换
+                        var one = inputCheck();
+                    }
+                },
+                columns: initColumns,
+            });
+            return dataTables;
+        };
+        
+        // 是否开始选课按钮
+        var isDisableFunc = function(status){
+            var selectObj = $('#selectedBtn');
+            switch(status){
+                case 1:
+                    selectObj.prop("disabled", true);
+                    break;
+                case 2:   
+                    selectObj.prop("disabled", false);
+                    break;
+            }
+        };
+        // 初始化
+        var aIDs = new Array();
+        var inputCheck = function(){
+             // 选择框
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green'
+            });
+            // 选中状态
+            $('.i-checks').on('ifChecked', function(event){  // 选中
+                var id = $(this).val();
+                aIDs.push(id);  // 添加元素
+                //console.log(aIDs);
+                (aIDs.length) > 0 ? isDisableFunc(2) : isDisableFunc(1);
+            });
+            
+            $('.i-checks').on('ifUnchecked', function(event){  // 取消
+                var id = $(this).val();
+                aIDs.remove(id);  // 删除元素
+                //console.log(aIDs);
+                (aIDs.length) > 0 ? isDisableFunc(2) : isDisableFunc(1);
+            });
+            return true;
+        };
+        
+        
+        //Array.prototype  属性表示 Array 构造函数的原型，并允许您向所有Array对象添加新的属性和方法。
+        // 删除数组中某一个元素
+        if(!Array.prototype.indexOf) {
+            Array.prototype.indexOf = function(val) {
+                for (var i = 0; i < this.length; i++) {
+                    if (this[i] == val) return i;
+                }
+                return -1;
+            };
+        }
+        if(!Array.prototype.remove) {
+            Array.prototype.remove = function(val) {
+                var index = this.indexOf(val);
+                if (index > -1) {
+                    this.splice(index, 1);
+                }
+            };
+        }
+        
+        
+        
+        //执行添加操作
+        var add = function(that){
+            //感谢您，在线选课 ?
+            var student_id = "{{student_id}}";
+            if(student_id == 0 ){
+                student_id = $('#select_student_id').val();  // 管理员选择
+            }
+            
+            // 判断是否选择学生
+            if(!student_id){
+                console.log(student_id);
+                layer.msg("请选择学生", {icon: 2},function(){
+                   // console.log(2222);
+                    selectedStu();
+                });
+                return false;
+            }
+            
+            layer.alert('您确定要进行选课操作吗 ?', {
+                icon: 3,
+                title:"选课"
+            }, function(index){
+                var addUrl = "{{ url('/elective/adddata.html')|raw}}";
+                $.post( addUrl ,{ "course_id": aIDs ,"student_id": student_id}, function(data){
+                    if(data.valid == 0){
+                        var mess = data.message.student_id;
+                        layer.msg( mess, {icon: 3});
+                    }else{
+                        var icon = 2;
+                        if(data.status == 600200){
+                            icon = 1;
+                        }
+                        layer.msg(data.message, {icon: icon});
+                    }
+                },'json');
+            });
+        };
+        
+        
+        // 选择学生
+        var selectedStu = function(){
+            $('#selectedStudent').modal({backdrop: 'static', keyboard: true});
+            
+        };
+        
+         //下拉学期搜索未选课学生
+        var getStudents = function(idName,URL,dataOject){
+            $("#"+idName).select2({
+                cache: true,
+                dropdownParent: $("#selectedStudent"),
+                ajax: {
+                    type: "POST",
+                    url: "{{url('"+URL+"')|raw}}",
+                    dataType: 'json',
+                    delay: 800,
+                    initSelection: function(element, callback) { // 初始化时设置默认值，自动勾选此处设置的option  
+                        //callback(data);  
+                    },  
+                    data: function (params) {
+                        return dataOject;
+                    },
+                    processResults: function (outData, params) {
+                        var reData = [];
+                        if(outData.status == 200){
+                            $.each(outData.data, function(index, value){
+                                var obj = {
+                                    id : value.id,
+                                    text : '['+value.number+'] '+value.username
+                                };
+                                reData.push(obj);
+                            });
+                        }
+                        return {
+                            results: reData
+                        };
+                    }
+                }
+            });
+            return true;
+        };
+        
+        
+
+    </script>
+{% endblock %}
