@@ -1,6 +1,6 @@
 ## 天然打造·原生编写 
 [Github地址](https://github.com/yuncopy/students )
-[码云地址](https://gitee.com/yuncopy/students )
+[码云地址](https://gitee.com/yuncop/students)
 
 ### BaleCMS 是一个基于组件化原生编写的后台管理系统。
 
