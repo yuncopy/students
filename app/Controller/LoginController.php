@@ -34,7 +34,7 @@ class LoginController extends CommonController{
         $username = $this->getPostDatas('POST','username',false,'htmlspecialchars');
         $pass = $this->getPostDatas('POST','passwd',false,'htmlspecialchars');
 
-        //echo pass_hash($pass);exit;
+        //echo pass_hash($username.$pass);exit;
         //echo password_hash($pass,PASSWORD_DEFAULT);exit; // password_verify
 
         if($username && $pass){

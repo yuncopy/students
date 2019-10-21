@@ -116,6 +116,7 @@ class Install{
                 'agree'=>'./index.php?'.$this->_ac.'=env',
                 'active'=>'1'
             ]);
+
             exit($this->display(self::INSTALL_HTML[$_v]));
         }
         return $this;
@@ -390,8 +391,8 @@ php;
 
             $this->assign([
                 'active'=>'4',
-                'name'=>'admin',
-                'pass'=>'1111111',
+                'name'=>'jackin',
+                'pass'=>'123456',
                 'admin'=>'/login/index.html',
                 'home'=>'/'
             ]);
@@ -405,6 +406,7 @@ php;
 }
 
 // 参数
+ini_set('display_errors',0);
 $_param = '_a';
 $_a = isset($_GET[$_param]) ? trim($_GET[$_param]) : '';
 (new Install($_param))
