@@ -1,6 +1,8 @@
 ## 天然打造·原生编写 
-[Github地址](https://github.com/yuncopy/students)
-[码云地址](https://github.com/yuncopy/students)
+[Github地址]([https://github.com/yuncopy/students](https://github.com/yuncopy/students)
+)
+[码云地址]([https://github.com/yuncopy/students](https://github.com/yuncopy/students)
+)
 
 ### BaleCMS 是一个基于组件化原生编写的后台管理系统。
 
@@ -24,6 +26,11 @@
 - 一键按照部署
 - 完整的权限控制
 - 执行流程透明化
+
+#### 继续完善
+- 后台数据权限
+- 新增前台界面
+- 推出小程序商城
 
 #### 安装部署
 - 环境要求
@@ -57,5 +64,5 @@ Composer (可选,用于管理第三方扩展包)
 #### 技术支持
 遇到问题到问题或者需要二次开发请联系
 
-
+![image.png](https://upload-images.jianshu.io/upload_images/2897604-ff4b6efabc4561e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
