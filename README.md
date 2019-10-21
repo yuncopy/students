@@ -60,7 +60,8 @@ Composer (可选,用于管理第三方扩展包)
  ![image.png](https://upload-images.jianshu.io/upload_images/2897604-a08c28d858061f23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 #### 技术支持
-遇到问题或者需要二次开发请联系
+- [简书个人主页](https://www.jianshu.com/u/28c3f914af16) 欢迎留言
+- 遇到问题或者需要二次开发请联系
 
 ![image.png](https://upload-images.jianshu.io/upload_images/2897604-2741529bfbfaf80c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
