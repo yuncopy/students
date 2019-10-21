@@ -18,7 +18,7 @@
 - 路由配置更灵活
 - 强化路由功能
 - 更灵活的控制器
-- 优雅ORM操作
+- 优雅的ORM操作
 - 配置文件可分离
 - 命令行访问支持
 - 一键按照部署
@@ -60,7 +60,7 @@ Composer (可选,用于管理第三方扩展包)
  ![image.png](https://upload-images.jianshu.io/upload_images/2897604-a08c28d858061f23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 #### 技术支持
-遇到问题到问题或者需要二次开发请联系
+遇到问题或者需要二次开发请联系
 
 ![image.png](https://upload-images.jianshu.io/upload_images/2897604-2741529bfbfaf80c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
