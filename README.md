@@ -42,6 +42,10 @@ Apache 或 Nginx
 PDO PHP Extension
 CURL PHP Extension
 Composer (可选,用于管理第三方扩展包)
+- 前提准备
+   - 开启redis服务
+   - 配置文件 config/redis.php
+   - 如果没有vendor 目录请求自行执行 composer install
 - 主要配置nginx
 ```
    location / {

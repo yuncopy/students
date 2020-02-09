@@ -8,7 +8,7 @@
 
 return [
     'master'=>[
-        'host' => '192.168.33.10',
+        'host' => '127.0.0.1',
         'port' => 6379,
         'auth' =>'',
         'database' => 3,
