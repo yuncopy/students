@@ -161,6 +161,10 @@ class Install{
                 ['name'=>'PHP版本','low'=>'7.1','cur'=>PHP_VERSION,'cla'=>$php_cla,'can'=>$php_can],
             ];
 
+            //创建目录
+            define("APP_PATH",  realpath(dirname(__FILE__) . '/../../')); /* 指向public的上一级 */
+            require_once APP_PATH.'/config/app.php';
+
             $writableData =[
                 ['name'=>$realpath('./'),'low'=>'可写',
                     'cur'=>$writable('../') ? '可写' : '不可写' ,
