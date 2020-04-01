@@ -43,17 +43,98 @@ PDO PHP Extension
 CURL PHP Extension
 Composer (可选,用于管理第三方扩展包)
 - 前提准备
-   - 开启redis服务
+   - 开启redis服务，因为session使用redis缓存
    - 配置文件 config/redis.php
+        ```
+        return [
+            'master'=>[
+                'host' => '127.0.0.1',
+                'port' => 6379,
+                'auth' =>'',
+                'database' => 3,
+                'time_out'=>1
+            ]
+        ];
+        ```
    - 如果没有vendor 目录请求自行执行 composer install
-- 主要配置nginx
-```
-   location / {
- 	   # Redirect everything that isn't a real file to index.php
- 	     try_files $uri $uri/ /index.php$is_args$args;
-	}
-```
-- 访问public/install/index.php即可按照提示安装
+   
+- web服务是Nginx
+
+    ```
+    server
+    {
+       listen 80;
+       #listen [::]:80;
+       server_name balecms.me ;
+       index index.html index.htm index.php default.html default.htm default.php;
+       root  /home/wwwroot/balecms.me/public;
+    
+       
+       location / {
+           # Redirect everything that isn't a real file to index.php
+           try_files $uri $uri/ /index.php$is_args$args;
+       }
+    
+       #error_page   404   /404.html;
+    
+       # Deny access to PHP files in specific directory
+       #location ~ /(wp-content|uploads|wp-includes|images)/.*\.php$ { deny all; }
+    
+       location ~ [^/]\.php(/|$)
+       {
+           
+           #fastcgi_pass   127.0.0.1:9000;
+           #fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
+           fastcgi_pass  unix:/tmp/php-cgi.sock;
+           try_files $uri /index.php =404;
+           fastcgi_split_path_info ^(.+\.php)(/.+)$;
+           fastcgi_index  index.php;
+           fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+           include        fastcgi_params;
+       }
+       
+    
+       location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+       {
+           expires      30d;
+       }
+    
+       location ~ .*\.(js|css)?$
+       {
+           expires      12h;
+       }
+    
+       location ~ /.well-known {
+           allow all;
+       }
+    
+       location ~ /\.
+       {
+           deny all;
+       }
+    
+       access_log  /home/wwwlogs/balecms.me.log;
+    }
+                
+    ```
+- web服务是Apache服务器隐藏index.php即可
+
+    - 修改httpd.conf配置文件
+        - LoadModule rewrite_module modules/mod_rewrite.so 去掉前面#使rewrite 模块生效
+        - 修改httpd.conf中所有AllowOverride None 将None改为 All
+    - 代码项目目录添加.htaccess文件
+        ```
+        <IfModule mod_rewrite.c>
+         RewriteEngine on
+         RewriteBase /
+         RewriteCond %{REQUEST_FILENAME} !-d
+         RewriteCond %{REQUEST_FILENAME} !-f
+         RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
+        </IfModule>
+        
+        ```
+
+- 访问网站入口文件即可按照提示安装
 - 安装成功 初始化用户/密码： jackin / 123456
 
 #### 功能介绍

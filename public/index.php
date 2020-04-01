@@ -1,6 +1,8 @@
 <?php
 
 date_default_timezone_set('PRC');
+//调试模式，生产环境关闭即可
+ini_set('display_errors','on');
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'7.1.0','<'))  die('require PHP > 7.1.0 !');
 
